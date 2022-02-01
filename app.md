@@ -1,6 +1,6 @@
-#first======authentication;
+#first======authentication;\*\*Finished normal authentication
 #second=====student portal{
----result-portal,
+---class-portal,
 ---user-portal{
 payments,
 subjects,
@@ -18,3 +18,11 @@ notice,
 ----head-teachers-portal,
 ----principals-portal
 }
+
+<!-- Things done -->
+
+#Have-Implemented result checker on the user route
+
+<!-- Things to do -->
+
+#I should implement result checker on class portal

@@ -7,7 +7,7 @@ require("dotenv").config();
 var TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 getToken = (user) => {
-  return sign({ id: user._id, username: user.email }, TOKEN_SECRET, {
+  return sign({ id: user._id, email: user.email }, TOKEN_SECRET, {
     expiresIn: 780000,
   });
 };
@@ -28,9 +28,11 @@ const signUp = async (req, res) => {
   var users = new Users(userModel);
   var token = getToken(users);
   users.save();
-  return res
-    .status(201)
-    .json({ message: "User created Successfully!", token: token });
+  return res.status(201).json({
+    message: "User created Successfully!",
+    token: token,
+    userId: users._id,
+  });
 };
 
 const Login = async (req, res) => {
@@ -45,9 +47,11 @@ const Login = async (req, res) => {
   if (!validPassword)
     return res.status(400).send("Either email or password is wrong");
   var token = getToken(user);
-  return res
-    .status(201)
-    .json({ message: "User successfully sign in", token: token });
+  return res.status(201).json({
+    message: "User successfully sign in",
+    token: token,
+    userId: user._id,
+  });
 };
 
 const reset = (req, res) => {
