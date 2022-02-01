@@ -1,13 +1,16 @@
 var nodemailer = require("nodemailer");
 
-const EMAIL_ACCOUNT = process.env.EMAIL_ACCOUNT ?? "futurepayafrica@gmail.com";
-const EMAIL_KEY = process.env.EMAIL_KEY ?? "Futurelabs@123";
+const EMAIL_ACCOUNT = "kamounation@gmail.com";
+const EMAIL_KEY = "kamoucares";
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: EMAIL_ACCOUNT,
     pass: EMAIL_KEY,
+    type: "SMTP",
+    host: "smtp.gmail.com",
+    secure: true,
   },
 });
 
