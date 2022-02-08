@@ -12,6 +12,13 @@ const Users = mongoose.model(
     position: { type: String },
     class: { type: String },
     subjects: [],
+    timetable: [],
+    result: [],
+    students: [],
+    classId: { type: String },
+    sectionId: { type: String },
+    blackId: { type: Boolean },
+    suspended: { type: Boolean },
     resetToken: { type: String },
     resetTokenExpiration: { type: String },
   })

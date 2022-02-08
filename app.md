@@ -1,7 +1,8 @@
 #first======authentication;\*\*Finished normal authentication
 #second=====student portal{
 ---class-portal,
----user-portal{
+---user-portal,
+---result-portal{
 payments,
 subjects,
 timetables,
@@ -25,4 +26,6 @@ notice,
 
 <!-- Things to do -->
 
-#I should implement result checker on class portal
+#I should implement result checker on class portal /finished this
+
+#assign classId and sectionId too students on authentiaction

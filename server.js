@@ -16,7 +16,7 @@ server.use("/student", studentRouter);
 server.use("/staff", staffRouter);
 server.use(header);
 
-Mongo.then((result) => {
+Mongo.then(function (result) {
   console.log(`=========>Mongo client connected at ${port}`);
 }).catch((err) => {
   console.log(`=========> ${err}`);

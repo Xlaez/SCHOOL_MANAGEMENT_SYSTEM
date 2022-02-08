@@ -12,20 +12,22 @@ getToken = (user) => {
   });
 };
 
+//SIGNUP A NEW STUDENT
 const signUp = async (req, res) => {
   const body = req.body;
+  var password = body.password;
   const user = await Users.findOne({ email: body.email });
   if (user) {
     return res
       .status(400)
       .json({ message: "This user already exists, try Loging in instead" });
   }
-  var userModel = {
+
+  var users = new Users({
     fullname: body.fullname,
     email: body.email,
-    password: hashSync(body.password, 12),
-  };
-  var users = new Users(userModel);
+    password: hashSync(password, 12),
+  });
   var token = getToken(users);
   users.save();
   return res.status(201).json({
@@ -35,6 +37,7 @@ const signUp = async (req, res) => {
   });
 };
 
+//LOGIN FOR ANY USER
 const Login = async (req, res) => {
   const body = req.body;
   const user = await Users.findOne({ email: body.email });
@@ -54,6 +57,7 @@ const Login = async (req, res) => {
   });
 };
 
+//RESET A USERS ACCOUNT PASSWORD
 const reset = (req, res) => {
   randomBytes(32, (err, buffer) => {
     if (err)
@@ -84,6 +88,7 @@ const reset = (req, res) => {
   });
 };
 
+//STORE NEW PASSWORD
 const newPassword = async (req, res) => {
   const body = req.body;
   const params = req.params;

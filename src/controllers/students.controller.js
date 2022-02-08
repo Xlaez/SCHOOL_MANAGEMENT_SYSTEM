@@ -1,6 +1,7 @@
 const { Users } = require("../modules/app.model");
 require("dotenv").config();
 
+// FETCH STUDENTS DATA
 const fetchStudentsInfo = (req, res) => {
   const { id } = req.params;
   Users.findOne({ _id: id })
@@ -17,6 +18,7 @@ const fetchStudentsInfo = (req, res) => {
     });
 };
 
+//UPLOAD STUDENTS DATA
 const uploadStudentsInfo = (req, res) => {
   const body = req.body;
   const { id } = req.params;
@@ -49,6 +51,7 @@ const uploadStudentsInfo = (req, res) => {
     });
 };
 
+//EDIT STUDENTS DATA
 const editStudentsInfo = (req, res) => {
   const body = req.body;
   const { id } = req.params;
@@ -69,6 +72,7 @@ const editStudentsInfo = (req, res) => {
     });
 };
 
+//CHECK STUDENT RESULT FROM PORTAL
 const checkResult = (req, res) => {
   const { id } = req.params;
   Users.findOne({ _id: id })
@@ -84,6 +88,7 @@ const checkResult = (req, res) => {
     });
 };
 
+//CHECK SUBJECTS A STUDENT OFFER
 const checkSubjects = (req, res) => {
   const { id } = req.params;
   Users.findById(id)
@@ -102,10 +107,39 @@ const checkSubjects = (req, res) => {
     });
 };
 
+//CHECK READING TIMETABLE
+const checkReadingTimetable = (req, res) => {
+  const { id } = req.params;
+  Users.findById(id)
+    .then((studentData) => {
+      var classTimetable = studentData.timetable;
+      let finalData;
+      finalData = classTimetable.forEach((day) => {
+        return day;
+      });
+      return res.status(200).json({ data: finalData });
+    })
+    .catch((err) => {
+      return res.status(400).json(err);
+    });
+};
+
+//SET READING TIMETABLE
+// const createReadingTimeTable = (req, res) =>{
+//   const {id} = req.params;
+//   const newTimeTable =
+
+//   \Users.findById(id).then(studentData =>{
+//     if(studentData.timetable === null)return res.status(400).json({message:"no data for this user found"})
+//     var newTimeTable = new timetable({})
+//   })
+// }
+
 module.exports = {
   fetchStudentsInfo,
   uploadStudentsInfo,
   editStudentsInfo,
   checkResult,
   checkSubjects,
+  checkReadingTimetable,
 };
