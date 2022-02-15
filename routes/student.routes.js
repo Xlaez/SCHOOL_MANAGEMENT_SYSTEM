@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { studentId } = require("../middleware/_createStudentsId");
 const {
   fetchStudentsInfo,
   uploadStudentsInfo,
@@ -10,7 +11,7 @@ const {
 const router = Router();
 
 router.get("/:id", fetchStudentsInfo);
-router.post("/upload/:id", uploadStudentsInfo);
+router.post("/upload/:id", [studentId], uploadStudentsInfo);
 router.put("/upload/:id", editStudentsInfo);
 router.get("result/:id", checkResult);
 router.get("subjects/:id", checkSubjects);

@@ -1,6 +1,15 @@
 const { Users } = require("../modules/app.model");
 require("dotenv").config();
 
+const {
+  IdJSSone,
+  IdJSSthree,
+  IdJSStwo,
+  IdSSSone,
+  IdSSSthree,
+  IdSSStwo,
+} = require("../../import/classIDs");
+
 // FETCH STUDENTS DATA
 const fetchStudentsInfo = (req, res) => {
   const { id } = req.params;
@@ -13,7 +22,7 @@ const fetchStudentsInfo = (req, res) => {
         data: studentsInfo,
       });
     })
-    .catch((ERR) => {
+    .catch((err) => {
       return res.status(400).json(err);
     });
 };
@@ -22,6 +31,10 @@ const fetchStudentsInfo = (req, res) => {
 const uploadStudentsInfo = (req, res) => {
   const body = req.body;
   const { id } = req.params;
+  const image = req.file;
+  if (!image)
+    return res.status(400).json({ message: "Image type not supported" });
+  var imageUrl = image.path;
   Users.findOne({ _id: id })
     .then((student) => {
       if (student === null || !student)
@@ -39,6 +52,7 @@ const uploadStudentsInfo = (req, res) => {
         email: preDetails.email,
         password: preDetails.password,
         ...body,
+        image: imageUrl,
       });
       updatedUserInfo.save();
       return res.status(201).json({
@@ -129,7 +143,7 @@ const checkReadingTimetable = (req, res) => {
 //   const {id} = req.params;
 //   const newTimeTable =
 
-//   \Users.findById(id).then(studentData =>{
+//   Users.findById(id).then(studentData =>{
 //     if(studentData.timetable === null)return res.status(400).json({message:"no data for this user found"})
 //     var newTimeTable = new timetable({})
 //   })

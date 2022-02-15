@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { isEmail, isPassword } = require("../config/validator");
 const {
   signUp,
   Login,
@@ -8,9 +9,9 @@ const {
 
 const router = Router();
 
-router.post("/", signUp);
-router.post("/signin", Login);
+router.post("/", [isEmail, isPassword], signUp);
+router.post("/signin", [isEmail, isPassword], Login);
 router.post("/reset", reset);
-router.post("/:reset", newPassword);
+router.post("/:reset", [isPassword], newPassword);
 
 module.exports.authRouter = router;
