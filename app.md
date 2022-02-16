@@ -6,17 +6,17 @@
 payments,
 subjects,
 timetables,
-teachers,
-assignments,
-profile,
-notice,
+teachers,//half done
+assignments, // done
+profile, //done
+notice,//done
 },
 ---prefects-portal
 }
 #third=====staff portal{
-----admin-portal,
-----vice-principal-portal,
-----head-teachers-portal,
+----admin-portal,// half done
+----vice-principal-portal, //half done
+----head-teachers-portal, //half done
 ----principals-portal
 }
 
@@ -29,3 +29,5 @@ notice,
 #I should implement result checker on class portal /finished this
 
 #assign classId and sectionId too students on authentiaction
+
+#DOWNLOAD PDFKIT AND PAYMENT METHOD PACKAGE

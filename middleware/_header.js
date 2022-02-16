@@ -7,8 +7,10 @@ const header = (req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type",
-    "Authorization",
-    "AccessToken"
+    "Admin-access",
+    "X-access-token",
+    "Class-Id",
+    "Section-Id"
   );
   next();
 };

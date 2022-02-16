@@ -1,4 +1,4 @@
-const { Users } = require("../modules/app.model");
+const { Users, Notice, Register } = require("../modules/app.model");
 require("dotenv").config();
 var IDJuniorClass = process.env.ID_JUNIORCLASS;
 var IDSeniorClass = process.env.ID_SENIORCLASS;
@@ -141,15 +141,64 @@ const FetchSuspended = (req, res) => {
 };
 
 const FetchTeachers = (req, res) => {
-  Users.find()
+  Users.find({ role: "teacher" })
     .then((teachers) => {
       if (teachers === null) return res.status(400).send("No User found!");
-      if (teachers.role === "Teacher" || teachers.role === "teacher") {
-        return res.status(200).json({
-          message: "All teachers have been found",
-          data: teachers.role,
-        });
-      }
+
+      return res.status(200).json({
+        message: "All teachers have been found",
+        data: teachers,
+      });
+    })
+    .catch((err) => {
+      return res.status(400).json(err);
+    });
+};
+
+const FetchNonTeachers = (req, res) => {
+  let role = "non-teaching";
+  Users.find({ role: role })
+    .then((nonTeachers) => {
+      if (nonTeachers === null)
+        return res.status(400).send("No non-teahers found");
+      return res.status(200).json({
+        message: "successfully gotten non-teaching staffs",
+        data: nonTeachers,
+      });
+    })
+    .catch((err) => {
+      return res.status(400).json(err);
+    });
+};
+
+const postNotice = async (req, res) => {
+  const { body } = req;
+  try {
+    var notice = new Notice({
+      ...body,
+    });
+    notice = await notice.save();
+    return res.status(201).json({
+      message: "Notice successfully created and posted to the notice portal",
+      data: notice,
+    });
+  } catch (err) {
+    return res.status(400).json(err);
+  }
+};
+
+const FetchRegisteredStudents = (req, res) => {
+  Register.find()
+    .sort({
+      timestamps: "desc",
+    })
+    .then((registeredStudents) => {
+      if (registeredStudents === null || !registeredStudents)
+        return res.status(400).json({ message: "No registered student found" });
+      return res.status(200).json({
+        message: "Registered students gotten from database",
+        data: registeredStudents,
+      });
     })
     .catch((err) => {
       return res.status(400).json(err);
@@ -157,6 +206,7 @@ const FetchTeachers = (req, res) => {
 };
 
 module.exports = {
+  FetchRegisteredStudents,
   FetchStudentsForJunior,
   FetchStudentsForSenior,
   FetchAllStudents,
@@ -165,4 +215,6 @@ module.exports = {
   FetchBlackList,
   FetchSuspended,
   FetchTeachers,
+  FetchNonTeachers,
+  postNotice,
 };
