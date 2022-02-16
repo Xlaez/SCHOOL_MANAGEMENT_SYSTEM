@@ -8,7 +8,7 @@ const studentId = (req, res, next) => {
   var body = req.body;
   if (body.role === "student") {
     if (
-      body.class === "junior1" ||
+      body.clanamess === "junior1" ||
       body.class === "junior2" ||
       body.class === "junior3"
     ) {
