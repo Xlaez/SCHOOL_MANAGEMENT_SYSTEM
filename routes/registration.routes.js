@@ -8,7 +8,7 @@ const {
 
 const router = Router();
 
-router.post("/", [isEmail], postRegisteration);
+router.post("/", postRegisteration);
 router.get("/:id", getSingleRegistration);
 router.put("/:id", editRegisteredStudent);
 
