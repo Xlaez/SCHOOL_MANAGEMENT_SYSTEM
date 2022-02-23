@@ -122,7 +122,7 @@ const Register = mongoose.model(
         required: true,
       },
 
-      nextOfKIn: {
+      nextOfKin: {
         type: String,
         required: true,
       },
@@ -150,17 +150,12 @@ const Register = mongoose.model(
         type: String,
         required: true,
       },
-      previousSchoolAttended: {
-        type: String,
-        required: true,
-      },
       favouritSubject: {
         type: String,
         required: true,
       },
       email: {
         type: String,
-        // required: true,
       },
       sponsor: {
         type: String,
@@ -178,10 +173,6 @@ const Register = mongoose.model(
         type: String,
       },
       classOfEntry: {
-        type: String,
-        required: true,
-      },
-      numberOfSiblings: {
         type: String,
         required: true,
       },

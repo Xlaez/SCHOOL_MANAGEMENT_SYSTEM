@@ -1,22 +1,32 @@
 const { sendMail } = require("../../config/_mail");
-const { Register } = require("../modules/app.model");
+const { Register, Users } = require("../modules/app.model");
 
-const postRegisteration = (req, res) => {
+const postRegisteration = async (req, res) => {
   const body = req.body;
+  Register.findOne({ email: body.email }).then(
+    data => {
+      return res.status(400).json({ message: "Already submitted your data", data: data })
+
+    }
+  )
   var register = new Register({
     ...body,
   });
-  register.save();
+  register = await register.save();
   var response = sendMail({
     to: register.email,
     subject: "Registration for FL Schools",
     html: `Dear ${register.fullname}, Your reistration form has been successfully submitted to the school portal`,
   });
   response;
-  return res.status(201).json({
-    message: `Sucessfully submitted your data ${body.fullname}`,
-    data: register,
-  });
+  try {
+    return res.status(201).json({
+      message: `Sucessfully submitted your data ${body.fullname}`,
+      data: register,
+    });
+  } catch (err) {
+    return res.status(400).json(err);
+  }
 };
 
 const getSingleRegistration = (req, res) => {

@@ -32,6 +32,7 @@ const uploadStudentsInfo = (req, res) => {
   const body = req.body;
   const { id } = req.params;
   const image = req.file;
+  console.log(image);
   if (!image)
     return res.status(400).json({ message: "Image type not supported" });
   var imageUrl = image.path;
@@ -51,8 +52,8 @@ const uploadStudentsInfo = (req, res) => {
         fullname: preDetails.fullname,
         email: preDetails.email,
         password: preDetails.password,
-        ...body,
         image: imageUrl,
+        ...body,
       });
       updatedUserInfo.save();
       return res.status(201).json({
