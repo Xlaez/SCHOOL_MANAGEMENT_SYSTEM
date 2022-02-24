@@ -1,4 +1,4 @@
-const { Users, Assignment } = require("../modules/app.model");
+const { Users, Assignment, Result, Drafts } = require("../modules/app.model");
 require("dotenv").config();
 
 const fetchTeachersData = (req, res) => {
@@ -74,7 +74,7 @@ const fetchTeachersStudents = (req, res) => {
 
 const postAssignment = async (req, res) => {
   const body = req.body;
-  const assignment = new Assignment({
+  var assignment = new Assignment({
     ...body,
   });
   assignment = await assignment.save();
@@ -87,9 +87,44 @@ const postAssignment = async (req, res) => {
   }
 };
 
+const createStudentresult = async (req, res) => {
+  const body = req.body;
+  const email = req.body.email
+  var isUser = await Users.findOne({ email: email });
+  if (!isUser) return res.status(400).json({
+    message: "Try loggin in again"
+  })
+  var name = isUser.name;
+  console.log(name)
+  try {
+    var result = new Result({
+      ...body,
+      name: name,
+      studentId: isUser.studentId,
+      email: email
+    })
+    result = await result.save()
+    return res.status(201).json({ data: result });
+  } catch (err) {
+    return res.status(401).json(err)
+  }
+}
+
+const editResult = async (req, res) => {
+  const body = req.body;
+  var email = body.email;
+  var result = await Result.findOneAndUpdate(email, body);
+  return res.status(201).json({ message: 'result updated successfully', data: result });
+}
+
+
+
 module.exports = {
   fetchTeachersData,
   uploadTeachersInfo,
   fetchTeachersStudents,
   postAssignment,
+  createStudentresult,
+  editResult,
+
 };

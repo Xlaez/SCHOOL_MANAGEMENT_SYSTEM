@@ -3,7 +3,7 @@ const { Notice } = require("../modules/app.model");
 const getNotice = (req, res) => {
   Notice.find()
     .sort({
-      desc: "timestamps",
+      createdAt: "desc"
     })
     .then((notice) => {
       if (notice === null)

@@ -5,10 +5,11 @@ const ID_SENIORCLASS = process.env.ID_SENIORCLASS;
 
 var concat = "1++";
 const studentId = (req, res, next) => {
-  var body = req.body;
+  var { body } = req;
   if (body.role === "student") {
+    console.log(body.role)
     if (
-      body.clanamess === "junior1" ||
+      body.class === "junior1" ||
       body.class === "junior2" ||
       body.class === "junior3"
     ) {

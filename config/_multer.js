@@ -1,11 +1,11 @@
 const multer = require("multer");
-var prefix = Date.now().toLocaleString();
+var prefix = Math.floor(Math.random() * 6)
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./assets/images");
   },
   filename: (req, file, cb) => {
-    cb(null, `${prefix}-${file.originalname}`);
+    cb(null, `pics-${prefix}-${file.originalname}`);
   },
 });
 

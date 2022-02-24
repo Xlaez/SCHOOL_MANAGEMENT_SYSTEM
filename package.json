@@ -1,7 +1,7 @@
 {
   "name": "school_management_system",
   "version": "1.0.0",
-  "description": "\"A broad and simple management system for any secondary and primary school, which contains allaid to student and staff data",
+  "description": "\"A broad and simple management system for any secondary and primary school, which contains all aid to student and staff data",
   "scripts": {
     "build": "node server.js",
     "start": "nodemon server.js"

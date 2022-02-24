@@ -14,24 +14,31 @@ const { fileFilter, fileStorage } = require("./config/_multer");
 const { blogRouter } = require("./routes/blog.routes");
 const { registrationRouthe } = require("./routes/registration.routes");
 const { adminRouthe } = require("./routes/admin.routes");
+const { complaintsRouter } = require("./routes/complaints.routes");
+const { isAuth } = require("./middleware/_is_auth");
 
 const server = express();
+
+server.set("view engine", "ejs")
 server.use(urlencoded({ extended: true }));
 server.use(json());
-server.use("/auth", authRouter);
-server.use("/user", userRouter);
-server.use("/admin", adminRouthe);
-server.use("/student", studentRouter);
-server.use("/staff", staffRouter);
-server.use("/notice", noticeRouthe);
-server.use("/assignments", assignmentRouter);
-server.use("/articles", blogRouter);
-server.use("/register", registrationRouthe);
-server.use(header);
 server.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
+server.use(header);
+
+server.use("/auth", authRouter);
+server.use("/user", [isAuth], userRouter);
+server.use("/admin", [isAuth], adminRouthe);
+server.use("/student", [isAuth], studentRouter);
+server.use("/staff", [isAuth], staffRouter);
+server.use("/notice", [isAuth], noticeRouthe);
+server.use("/assignments", [isAuth], assignmentRouter);
+server.use("/articles", blogRouter);
+server.use("/register", registrationRouthe);
+server.use('/complaints', complaintsRouter)
 server.use(express.static(path.join(__dirname, "assets", "images")));
+server.use(express.static(path.join(__dirname, "view")));
 
 Mongo.then(function (result) {
   console.log(`=========>Mongo client connected at ${port}`);

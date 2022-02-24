@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ful | Payment Gateway</title>
+  </head>
+  <body>
+    <div class="container">
+      <form id="payment-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email-address" required />
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="tel" id="amount" required />
+        </div>
+        <div class="form-group">
+          <label for="amount">Reg No</label>
+          <input type="text" id="regNo" required />
+        </div>
+        <div class="form-submit">
+          <button type="submit" onclick="payWithPayStack()">Pay</button>
+        </div>
+      </form>
+    </div>
+    <!-- <script src=""></script> -->
+  </body>
+</html>

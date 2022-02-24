@@ -2,7 +2,7 @@ const { Blog } = require("../modules/app.model");
 
 const fetchBlogArticles = async (req, res) => {
   const articles = await Blog.find().sort({
-    timestamps: "desc",
+    createdAt: "desc",
   });
   try {
     if (articles === null)
@@ -45,6 +45,7 @@ const createArticle = async (req, res) => {
   var articles = new Blog({
     ...body,
     userId: userId,
+    image: image.path
   });
   articles = await articles.save();
   try {
