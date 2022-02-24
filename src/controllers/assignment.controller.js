@@ -3,7 +3,7 @@ const { Assignment } = require("../modules/app.model");
 const fetchAssignments = async (req, res) => {
   try {
     const assignments = await Assignment.find().sort({
-      desc: "timestamps",
+      createdAt: "desc"
     });
     return res.status(200).json({
       message: "Assignments have been successfully displayed",

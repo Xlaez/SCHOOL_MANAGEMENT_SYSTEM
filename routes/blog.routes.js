@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const { grantAccess } = require("../middleware/_is_admin");
+const { isAuth } = require("../middleware/_is_auth");
 const {
   fetchBlogArticles,
   getSingleBloagArticle,
@@ -12,9 +14,9 @@ const router = Router();
 
 router.get("/", fetchBlogArticles);
 router.get("/:id", getSingleBloagArticle);
-router.get("/:userId", getUserArticle);
-router.post("/", createArticle);
-router.put("/:id", editArticle);
-router.delete("/:id", deleteArticle);
+router.get("/:userId", [isAuth], getUserArticle);
+router.post("/", [isAuth], createArticle);
+router.put("/:id", [isAuth], editArticle);
+router.delete("/:id", [isAuth], deleteArticle);
 
 module.exports.blogRouter = router;

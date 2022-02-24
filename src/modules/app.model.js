@@ -12,11 +12,6 @@ const Users = mongoose.model(
       phone: { type: String },
       position: { type: String },
       class: { type: String },
-      subjects: [],
-      timetable: [],
-      result: [],
-      students: [],
-      studentId: { type: String },
       classId: { type: String },
       sectionId: { type: String },
       blackId: { type: Boolean },
@@ -212,10 +207,83 @@ const Blog = mongoose.model(
   )
 );
 
+const Result = mongoose.model(
+  "Result_portal",
+  new mongoose.Schema(
+    {
+      title: {
+        type: String,
+        required: [true, "Title for this notice hasn't been supplied"],
+      },
+      name: {
+        type: String
+      },
+      content: [],
+      position: {
+        type: String, required: true
+      },
+      email: {
+        type: String,
+        required: true
+      },
+      remark: {
+        type: String,
+        required: true,
+      },
+      date: {
+        type: String,
+        required: true
+      },
+      average: {
+        type: String, required: true
+      },
+      classAverage: {
+        type: String,
+        required: true,
+      },
+      adminRemark: {
+        type: String,
+      },
+
+    },
+    {
+      timestamps: true,
+    }
+  )
+);
+
+const Drafts = mongoose.model(
+  "Drafts",
+  new mongoose.Schema(
+    {
+      header: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      userId: {
+        type: String,
+        required: true
+      }
+    },
+    {
+      timestamps: true,
+    }
+  )
+);
+
 module.exports = {
   Users,
   Assignment,
   Notice,
   Register,
   Blog,
+  Result,
+  Drafts
 };

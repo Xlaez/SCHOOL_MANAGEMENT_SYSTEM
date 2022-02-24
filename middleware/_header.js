@@ -1,7 +1,7 @@
 const header = (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
-    "Access-Control-Allow-Methods",
+    "Access-Control-Allow-Methods", '*',
     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
   );
   res.setHeader(
@@ -10,7 +10,8 @@ const header = (req, res, next) => {
     "Admin-access",
     "X-access-token",
     "Class-Id",
-    "Section-Id"
+    "Section-Id",
+    "userId"
   );
   next();
 };

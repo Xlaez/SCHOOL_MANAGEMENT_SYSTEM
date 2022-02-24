@@ -1,8 +1,12 @@
+const pdf = require('pdfkit');
+const path = require('path')
+const fs = require('fs')
 const { sendMail } = require("../../config/_mail");
 const { Register, Users } = require("../modules/app.model");
 
 const postRegisteration = async (req, res) => {
   const body = req.body;
+  const image = req.file;
   Register.findOne({ email: body.email }).then(
     data => {
       return res.status(400).json({ message: "Already submitted your data", data: data })
@@ -11,6 +15,7 @@ const postRegisteration = async (req, res) => {
   )
   var register = new Register({
     ...body,
+    image: image.BiodataPath
   });
   register = await register.save();
   var response = sendMail({
@@ -68,8 +73,26 @@ const editRegisteredStudent = (req, res) => {
     });
 };
 
+const sendBiodata = (req, res) => {
+  const { id } = req.params;
+  var biodataName = 'bio-' + id + '.pdf'
+  var BiodataPath = path.join('assets', 'data', biodataName)
+  Register.findById(id).then(data => {
+    var pdfDoc = new pdf();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="' + biodataName + ' "')
+    // pdf.pipeline();
+    pdfDoc.pipe(fs.createWriteStream(BiodataPath))
+    pdfDoc.pipe(res)
+    pdfDoc.addContent(data)
+    pdfDoc.end();
+
+  }).catch(err => { return res.status(400).json(err) });
+}
+
 module.exports = {
   postRegisteration,
   getSingleRegistration,
   editRegisteredStudent,
+  sendBiodata
 };
