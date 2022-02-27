@@ -21,6 +21,7 @@
     "nodemailer": "^6.7.2",
     "pdfkit": "^0.13.0",
     "pug": "^3.0.2",
+    "socket.io": "^4.4.1",
     "webrtc": "^1.14.1"
   },
   "devDependencies": {

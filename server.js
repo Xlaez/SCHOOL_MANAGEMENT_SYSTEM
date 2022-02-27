@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const { stream } = require('./public/stream')
 const { urlencoded, json } = require("body-parser");
 const { Mongo } = require("./config/_db");
 const { header } = require("./middleware/_header");
@@ -39,13 +40,24 @@ server.use("/register", registrationRouthe);
 server.use('/complaints', complaintsRouter)
 server.use(express.static(path.join(__dirname, "assets", "images")));
 server.use(express.static(path.join(__dirname, "view")));
+server.use(express.static(path.join(__dirname, "public")));
+
+server.get('/', (req, res) => {
+  res.sendFile(__dirname + 'public', '/index.html')
+})
+
+const port = process.env.PORT || 8080;
+var connection = server.listen(port);
 
 Mongo.then(function (result) {
   console.log(`=========>Mongo client connected at ${port}`);
+  const io = require('./src/mixins/connection.socket').init(connection)
+  // io.of('/stream').on('connection', stream)
+  io.on('connection', (stream) => {
+    console.log('Client connected')
+  })
 }).catch((err) => {
   console.log(`=========> ${err}`);
 });
 
-const port = process.env.PORT || 8080;
 
-server.listen(port);

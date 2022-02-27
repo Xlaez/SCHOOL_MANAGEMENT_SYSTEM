@@ -1,30 +1,22 @@
 const { Users, Notice, Register } = require("../modules/app.model");
+const { getIo } = require('../mixins/connection.socket')
 require("dotenv").config();
-var IDJuniorClass = process.env.ID_JUNIORCLASS;
-var IDSeniorClass = process.env.ID_SENIORCLASS;
 
-var {
-  IdJSSone,
-  IdJSStwo,
-  IdJSSthree,
-  IdSSSone,
-  IdSSStwo,
-  IdSSSthree,
-} = require("../../import/classIDs");
+var JUNIOR_ID = process.env.ID_JUNIORCLASS
+var SENIOR_ID = process.env.ID_SENIORCLASS
+var SENIOR1 = process.env.ID_SENIOR1
+var SENIOR2 = process.env.ID_SENIOR2
+var SENIOR3 = process.env.ID_SENIOR3
+var JUNIOR1 = process.env.ID_JUNIOR1
+var JUNIOR2 = process.env.ID_JUNIOR2
+var JUNIOR3 = process.env.ID_JUNIOR3
 
-const newJSS1ID = IdJSSone.concat(IDJuniorClass);
-const newJSS2ID = IdJSStwo.concat(IDJuniorClass);
-const newJSS3ID = IdJSSthree.concat(IDJuniorClass);
-const newSSS1ID = IdSSSone.concat(IDSeniorClass);
-const newSSS2ID = IdSSStwo.concat(IdSSStwo);
-const newSSS3ID = IdSSSthree.concat(IdJSSthree);
-
-// Note: create class Id for students
 
 // Fetch all students for a class
 const FetchStudentsForJunior = (req, res) => {
-  Users.find({ classId: IDJuniorClass })
+  Users.find({ sectionId: JUNIOR_ID })
     .then((students) => {
+      console.log(students)
       if (students === null) return res.status(400).send("An error occured");
       return res.status(200).json({ data: students });
     })
@@ -34,7 +26,7 @@ const FetchStudentsForJunior = (req, res) => {
 };
 
 const FetchStudentsForSenior = (req, res) => {
-  Users.find({ classId: IDSeniorClass })
+  Users.find({ sectionId: SENIOR_ID })
     .then((students) => {
       if (students === null) return res.status(400).send("An error occured");
       return res.status(200).json({ data: students });
@@ -47,26 +39,14 @@ const FetchStudentsForSenior = (req, res) => {
 const FetchAllStudents = (req, res) => {
   Users.find()
     .sort({
-      email: "desc",
+      email: "asc",
     })
     .then((students) => {
-      const name = students.fullname;
-      const email = students.email;
-      const image = students.image;
-      const phone = students.phone;
-      const studentclass = students.class;
-      const subject = students.subject;
-      var studentData = {
-        name,
-        email,
-        image,
-        phone,
-        studentclass,
-        subject,
-      };
+      if (students == null) return res.status(400).send("null")
+
       return res.status(200).json({
         message: "Student Data successfully extracted",
-        data: studentData,
+        data: students,
       });
     })
     .catch((err) => {
@@ -79,6 +59,8 @@ const putStudentInBlackList = (req, res) => {
   Users.findOne(req.body.email)
     .then((student) => {
       student.blackId = true;
+
+      student.save()
       return res
         .status(200)
         .json({ message: "Student Added to balcklist", data: student });
@@ -178,6 +160,9 @@ const postNotice = async (req, res) => {
       ...body,
     });
     notice = await notice.save();
+    getIo().emit('notice', {
+      action: 'create', notice: notice
+    })
     return res.status(201).json({
       message: "Notice successfully created and posted to the notice portal",
       data: notice,
@@ -190,7 +175,7 @@ const postNotice = async (req, res) => {
 const FetchRegisteredStudents = (req, res) => {
   Register.find()
     .sort({
-      timestamps: "desc",
+      timestamps: "asc",
     })
     .then((registeredStudents) => {
       if (registeredStudents === null || !registeredStudents)

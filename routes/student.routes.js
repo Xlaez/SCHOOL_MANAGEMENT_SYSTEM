@@ -1,6 +1,5 @@
 const { Router } = require("express");
-const { studentId } = require("../middleware/_createStudentsId");
-const { createDrafts, fetchDrafts } = require("../src/controllers/staff.contoller");
+
 const {
   fetchStudentsInfo,
   uploadStudentsInfo,
@@ -10,7 +9,7 @@ const {
 const router = Router();
 
 router.get("/:id", fetchStudentsInfo);
-router.post("/upload/:id", [studentId], uploadStudentsInfo);
+router.post("/upload/:id", uploadStudentsInfo);
 router.put("/upload/:id", editStudentsInfo);
 router.post("/result/", checkResult);
 

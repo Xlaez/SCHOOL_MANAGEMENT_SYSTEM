@@ -10,7 +10,6 @@ const Users = mongoose.model(
       role: { type: String },
       image: { type: String },
       phone: { type: String },
-      position: { type: String },
       class: { type: String },
       classId: { type: String },
       sectionId: { type: String },
@@ -65,7 +64,7 @@ const Register = mongoose.model(
   "Registered_students",
   new mongoose.Schema(
     {
-      passport: {
+      image: {
         type: String,
         required: true,
       },
@@ -200,6 +199,7 @@ const Blog = mongoose.model(
         type: String,
         required: true,
       },
+      userId: String
     },
     {
       timestamps: true,

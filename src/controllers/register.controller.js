@@ -15,7 +15,7 @@ const postRegisteration = async (req, res) => {
   )
   var register = new Register({
     ...body,
-    image: image.BiodataPath
+    image: image.path
   });
   register = await register.save();
   var response = sendMail({
@@ -28,6 +28,7 @@ const postRegisteration = async (req, res) => {
     return res.status(201).json({
       message: `Sucessfully submitted your data ${body.fullname}`,
       data: register,
+      regId: register._id
     });
   } catch (err) {
     return res.status(400).json(err);
