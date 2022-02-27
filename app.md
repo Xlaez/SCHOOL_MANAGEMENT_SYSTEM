@@ -1,33 +1,56 @@
-#first======authentication;\*\*Finished normal authentication
-#second=====student portal{
----class-portal,
----user-portal,
----result-portal{
-payments,
-subjects,
-timetables,
-teachers,//half done
-assignments, // done
-profile, //done
-notice,//done
-},
----prefects-portal
-}
-#third=====staff portal{
-----admin-portal,// half done
-----vice-principal-portal, //half done
-----head-teachers-portal, //half done
-----principals-portal
-}
+          ***School Central Management System***
 
-<!-- Things done -->
+\*\*Implemented functionalities:
 
-#Have-Implemented result checker on the user route
+-Students can pay for registration form (online)
 
-<!-- Things to do -->
+-Fill the online form and submit
 
-#I should implement result checker on class portal /finished this
+-Admin can get students registration details.
 
-#assign classId and sectionId too students on authentiaction
+-All users can signup and signin to to the user dashboard and portal , ofcourse being differentn for each category of school user.
 
-#DOWNLOAD PDFKIT AND PAYMENT METHOD PACKAGE
+-All signup personnel’s data (except passwords) can be gotten by the super admin.
+
+-Dedicated blog portal for posting and discussions among students and can be monitored by teachers and admins.
+
+-Dedicated class portal’s for discussions among class mates and teacher.
+
+-A dedicated portal for posting news and information by admins and it also has the functionality to notify students and teachers of the new news.
+
+-Admin has different abilities depending on heirachy.
+-A complaint section accessible by parents with identification for their wards.
+
+-Student can view their data, can check subjects they offer, can check test scores.
+
+-A dedicated portal for viewing of new and submitting of assignments and classworks.
+
+-Students can view their results and grades imputed by teachers to the result poral.
+
+-Blaclisting, suspension and expolsion of students can be reflected on a students data as well as prevent access to specific actions.
+
+-All users can add, edit and delete drafts and important files.
+
+\*\*\*Partially implemented functinalitie:
+
+-A video chat plaform to allow for School meetings.
+
+-Special identification customized keys for users.
+
+\*\*\*Functionalities that will be implemented soon:
+
+-Filtering of what students type on blogs and other routes for potential banned words and report to admin.
+
+-Examination portal for writing online exams.
+
+-Admin differenciation and authorization.
+
+-Creating registration numbers.
+
+-School online store for school to advertise links to sites for download or purchase of materials.
+
+\*\*\*Remaining funnctinalities:
+-Chat app for student to student and teacher to teacher communication.
+
+-Payment functionalities for fees and all payments
+-Security of routes.

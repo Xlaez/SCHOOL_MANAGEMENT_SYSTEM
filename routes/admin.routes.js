@@ -15,7 +15,7 @@ const router = Router();
 router.get("/lower", FetchStudentsForJunior);
 router.get("/upper", FetchStudentsForSenior);
 router.get("/all", FetchAllStudents);
-router.get("/blacklisted", FetchBlackList);
+router.post("/blacklisted", FetchBlackList);
 router.get("/suspended", FetchSuspended);
 router.get("/teachers", FetchTeachers);
 router.post("/notice", postNotice);

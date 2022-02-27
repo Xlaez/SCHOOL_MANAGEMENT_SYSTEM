@@ -28,7 +28,7 @@ const getSingleBloagArticle = async (req, res) => {
 };
 
 const getUserArticle = (req, res) => {
-  const article = Blog.find({ userId: req.userId }).catch((err) => {
+  const article = Blog.find({ userId: req.get("student-access") }).catch((err) => {
     return res.status(400).json(err);
   });
   if (article === null || !article)
@@ -39,9 +39,10 @@ const getUserArticle = (req, res) => {
 };
 
 const createArticle = async (req, res) => {
+  var userId = req.get('student-access')
   const body = req.body;
   const image = req.file;
-  const userId = req.params.userId;
+  // const userId = req.params.userId;
   var articles = new Blog({
     ...body,
     userId: userId,

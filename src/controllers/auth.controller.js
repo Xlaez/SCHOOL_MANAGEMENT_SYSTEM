@@ -1,4 +1,4 @@
-var { Users } = require("../modules/app.model");
+var { Users, Register } = require("../modules/app.model");
 const { sign, verify, decode } = require("jsonwebtoken");
 const { compareSync, hashSync } = require("bcryptjs");
 const { sendMail } = require("../../config/_mail");
@@ -14,6 +14,8 @@ getToken = (user) => {
 
 //SIGNUP A NEW STUDENT
 const signUp = async (req, res) => {
+  const userAccess = req.get("user-access")
+  if (!userAccess) return res.status(400).send("Can't recognize this user")
   const body = req.body;
   var password = body.password;
   const user = await Users.findOne({ email: body.email });
@@ -22,6 +24,9 @@ const signUp = async (req, res) => {
       .status(400)
       .json({ message: "This user already exists, try Loging in instead" });
   }
+
+  var isVerified = Register.findOne({ regNo: userAccess })
+  if (!isVerified) return res.status(400).json({ message: "This user can't be found in reg " })
 
   var users = new Users({
     fullname: body.fullname,
@@ -39,6 +44,8 @@ const signUp = async (req, res) => {
 
 //LOGIN FOR ANY USER
 const Login = async (req, res) => {
+  const userAccess = req.get("student-access")
+  if (!userAccess) return res.status(400).send("Can't recognize this user")
   const body = req.body;
   const user = await Users.findOne({ email: body.email });
   if (!user) {
@@ -49,6 +56,9 @@ const Login = async (req, res) => {
   var validPassword = compareSync(body.password, user.password);
   if (!validPassword)
     return res.status(400).send("Either email or password is wrong");
+  var isVerified = Register.findOne({ userId: userAccess })
+  if (!isVerified) return res.status(400).json({ message: "This user can't be found in users" })
+
   var token = getToken(user);
   return res.status(201).json({
     message: "User successfully sign in",
