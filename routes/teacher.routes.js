@@ -6,13 +6,13 @@ const {
   uploadTeachersInfo,
   createStudentresult,
   editResult,
-} = require("../src/controllers/staff.contoller");
+} = require("../src/controllers/teacher.contoller");
 
 const router = Router();
 
-router.get("/", fetchTeachersData);
+router.get('/', fetchTeachersStudents);
+router.get("/:id", fetchTeachersData);
 router.post("/postInfo", uploadTeachersInfo);
-router.get("/:id", fetchTeachersStudents);
 router.post("/assignment", postAssignment);
 router.post('/result', createStudentresult);
 router.put('/result', editResult);

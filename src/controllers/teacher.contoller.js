@@ -9,6 +9,7 @@ const fetchTeachersData = (req, res) => {
         return res
           .status(400)
           .json({ message: "Couldn't get teachers information" });
+      if (teachersInfo.role !== 'teacher') return res.status(400).send("You are not registerd as a teacher")
       return res.status(200).json({
         message: `Found ${teachersInfo.fullname} data`,
         data: teachersInfo,
@@ -54,22 +55,14 @@ const uploadTeachersInfo = (req, res) => {
 
 // remember to add teachers id to the students.
 const fetchTeachersStudents = (req, res) => {
-  const { id } = req.params;
-  Users.find({ _id: id })
-    .then((students) => {
-      if (!students || students === null)
-        return res.status(400).json({
-          message:
-            "There are no students for thos teacher, please check the teachers id",
-        });
-      return res.status(200).json({
-        message: "Successfully gotten students for the teacher",
-        data: students,
-      });
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
+  const teacherheader = req.get('teachers-id')
+  Users.find({ teacherId: teacherheader }).then(
+    data => {
+      return res.status(200).json({ data })
+    }
+  ).catch(err => {
+    return res.status(400).json(err)
+  })
 };
 
 const postAssignment = async (req, res) => {
