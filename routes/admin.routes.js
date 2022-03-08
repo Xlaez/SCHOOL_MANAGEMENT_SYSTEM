@@ -5,10 +5,10 @@ const {
   FetchStudentsForSenior,
   FetchAllStudents,
   FetchBlackList,
-  FetchSuspended,
   FetchTeachers,
   postNotice,
   FetchRegisteredStudents,
+  suspendStudent,
 } = require("../src/controllers/admin.controlles");
 
 const router = Router();
@@ -17,7 +17,7 @@ router.get("/lower", [grantAccess], FetchStudentsForJunior);
 router.get("/upper", [grantAccess], FetchStudentsForSenior);
 router.get("/all", [grantAccess], FetchAllStudents);
 router.post("/blacklisted", [grantAccess], FetchBlackList);
-router.get("/suspended", [grantAccess], FetchSuspended);
+router.post('/suspend', [grantAccess], suspendStudent)
 router.get("/teachers", [grantAccess], FetchTeachers);
 router.post("/notice", [grantAccess], postNotice);
 router.get("/registered", [grantAccess], FetchRegisteredStudents);

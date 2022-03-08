@@ -1,4 +1,5 @@
 const { Users, Assignment, Result, Drafts } = require("../modules/app.model");
+const encrypt = require('bcryptjs')
 require("dotenv").config();
 var JUNIOR_ID = process.env.ID_JUNIORCLASS
 var SENIOR_ID = process.env.ID_SENIORCLASS
@@ -8,11 +9,19 @@ var SENIOR3 = process.env.ID_SENIOR3
 var JUNIOR1 = process.env.ID_JUNIOR1
 var JUNIOR2 = process.env.ID_JUNIOR2
 var JUNIOR3 = process.env.ID_JUNIOR3
-
+var TEACHER_J_1 = process.env.ID_TEACHER_JUNIOR1
+var TEACHER_J_2 = process.env.ID_TEACHER_JUNIOR2
+var TEACHER_J_3 = process.env.ID_TEACHER_JUNIOR3
+var TEACHER_S_1 = process.env.ID_TEACHER_SENIOR1
+var TEACHER_S_2 = process.env.ID_TEACHER_SENIOR2
+var TEACHER_S_3 = process.env.ID_TEACHER_SENIOR3
 const createDrafts = async (req, res) => {
-    const { body, id } = req.body;
+    const id = req.get('user-access');
+    const { body } = req
     var draft = new Drafts({
-        ...body,
+        header: body.header,
+        description: body.description,
+        content: encrypt.hashSync(body.content, 7),
         userId: id
     })
     draft = await draft.save();
@@ -24,9 +33,10 @@ const createDrafts = async (req, res) => {
 }
 
 const fetchDrafts = (req, res) => {
-    const { id } = req.params;
+    const id = req.get('user-access')
     Drafts.findOne({ userId: id }).then(
         drafts => {
+            encrypt
             if (!drafts) return res.status(400).send("You don't have any drafts")
             return res.status(200).json({ data: drafts })
         }
@@ -55,6 +65,7 @@ const uploadUsersInfo = (req, res) => {
     Users.findById(id).then(
 
         student => {
+            let teacherId;
             let sectionId;
             let classId;
             if (body.class === 'junior1' || body.class == 'junior2' || body.class === 'junior3') {
@@ -62,20 +73,27 @@ const uploadUsersInfo = (req, res) => {
                 classId = JUNIOR_ID
                 if (body.class === 'junior1') {
                     classId = classId.concat(JUNIOR1)
+                    teacherId = TEACHER_J_1
                 } else if (body.class === 'junior2') {
                     classId = classId.concat(JUNIOR2)
+                    teacherId = TEACHER_J_2
                 } else if (body.class === 'junior3') {
+                    teacherId = TEACHER_J_3
                     classId = classId.concat(JUNIOR3)
                 }
             }
             if (body.class === 'senior1' || body.class == 'senior2' || body.class == 'senior3') {
+
                 sectionId = SENIOR_ID
                 classId = SENIOR_ID
                 if (body.class === 'senior1') {
+                    teacherId = TEACHER_S_1
                     classId = classId.concat(SENIOR1)
                 } else if (body.class === 'senior2') {
+                    teacherId = TEACHER_S_2
                     classId = classId.concat(SENIOR2)
                 } else if (body.class === 'senior3') {
+                    teacherId = TEACHER_S_3
                     classId = classId.concat(SENIOR3)
                 }
             }
@@ -92,6 +110,7 @@ const uploadUsersInfo = (req, res) => {
                 classId: classId,
                 sectionId: sectionId,
                 userId: id,
+                teacherId: teacherId,
                 ...body,
             })
         }

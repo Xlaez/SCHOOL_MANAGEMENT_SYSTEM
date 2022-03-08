@@ -6,7 +6,6 @@ const superAdmin = (req, res, next) => {
     const userId = req.get('user-access')
     Users.findOne({ _id: userId }).then(
         data => {
-            console.log(data)
             if (!data) return res.status(400).json({ message: "Something went wrong!" })
             var roleAdmin = data.role;
             if (roleAdmin === 'superAdmin') {

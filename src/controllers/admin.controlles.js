@@ -71,13 +71,14 @@ const putStudentInBlackList = (req, res) => {
 };
 
 const suspendStudent = (req, res) => {
-  const { userId } = req.params;
-  Users.findOne(req.body.email)
+  Users.findOne({ email: req.body.email })
     .then((student) => {
-      student.suspended = true;
+      if (!student) return res.send('not found')
+      student.suspended = !student.suspended;
+      student.save()
       return res
         .status(200)
-        .json({ message: "Student Added to Suspension list", data: student });
+        .json({ message: "Action taken", data: student });
     })
     .catch((err) => {
       return res.status(400).json(err);
@@ -96,24 +97,6 @@ const FetchBlackList = (req, res) => {
         return res.status(400).json({ message: "Sorry an error occured" });
       return res.status(200).json({
         message: "Successfully found blacklisted students",
-        data: students,
-      });
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
-};
-
-const FetchSuspended = (req, res) => {
-  Users.find()
-    .sort({
-      email: "desc",
-    })
-    .then((students) => {
-      if (!students === true)
-        return res.status(400).json({ message: "Sorry an error occcured" });
-      return res.status(200).json({
-        message: "Successfully found bsuspended students",
         data: students,
       });
     })
@@ -198,7 +181,6 @@ module.exports = {
   putStudentInBlackList,
   suspendStudent,
   FetchBlackList,
-  FetchSuspended,
   FetchTeachers,
   FetchNonTeachers,
   postNotice,

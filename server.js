@@ -2,8 +2,10 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const compression = require('compression')
+const morgan = require('morgan')
 const { stream } = require('./public/stream')
 const { urlencoded, json } = require("body-parser");
+const { createWriteStream } = require("fs");
 const { Mongo } = require("./config/_db");
 const { header } = require("./middleware/_header");
 const { authRouter } = require("./routes/auth.routes");
@@ -22,9 +24,14 @@ const { superAdminRoute } = require("./routes/superadmin.routes");
 const { superAdmin } = require("./middleware/_is_super_admin");
 const { isTeacher } = require("./middleware/_is_teacher");
 const { storeRoute } = require("./routes/store.routes");
+const { isSuspended } = require("./middleware/_is_suspended");
+const { subjectsRouter } = require("./routes/subjects.routes");
+
+const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' })
 
 const server = express();
 
+server.use(morgan('combined', { stream: accessLogStream }));
 server.use(compression())
 server.set("view engine", "ejs")
 server.use(urlencoded({ extended: true }));
@@ -46,6 +53,7 @@ server.use("/api/register", registrationRouthe);
 server.use('/api/complaints', complaintsRouter)
 server.use('/api/superadmin', [isAuth], [superAdmin], superAdminRoute)
 server.use('/api/store', [isAuth], storeRoute)
+server.use('/api/subjects', [isAuth], subjectsRouter)
 server.use(express.static(path.join(__dirname, "assets", "images")));
 server.use(express.static(path.join(__dirname, "view")));
 server.use(express.static(path.join(__dirname, "public")));
@@ -62,7 +70,7 @@ Mongo.then(function (result) {
   const io = require('./src/mixins/connection.socket').init(connection)
   // io.of('/stream').on('connection', stream)
   io.on('connection', (stream) => {
-    console.log('Client connected')
+    console.log('=======>Client connected')
   })
 }).catch((err) => {
   console.log(`=========> ${err}`);

@@ -1,10 +1,11 @@
 const { Assignment } = require("../modules/app.model");
 
 const fetchAssignments = async (req, res) => {
+
+  const assignments = await Assignment.find().sort({
+    createdAt: "desc"
+  });
   try {
-    const assignments = await Assignment.find().sort({
-      createdAt: "desc"
-    });
     return res.status(200).json({
       message: "Assignments have been successfully displayed",
       data: assignments,
@@ -15,8 +16,7 @@ const fetchAssignments = async (req, res) => {
 };
 
 const fetchSingleAssignment = (req, res) => {
-  const { id } = req.params;
-  Assignment.findById(id)
+  Assignment.findById(req.params.id)
     .then((assignments) => {
       return res.status(200).json({
         message: `Successfully gotten ${assignments.title}.`,
@@ -29,10 +29,9 @@ const fetchSingleAssignment = (req, res) => {
 };
 
 const editAssignment = async (req, res) => {
-  const { id } = req.params;
+  const assignment = await Assignment.findByIdAndUpdate(req.params.id, req.body);
+  if (assignment === null) return res.status(400).send("This id isn't valid");
   try {
-    const assignment = await Assignment.findByIdAndUpdate(id, req.body);
-    if (assignment === null) return res.status(400).send("This id isn't valid");
     return res.status(200).json({
       message: "Successfully edited and updated an assignment",
       data: assignment,
@@ -43,12 +42,13 @@ const editAssignment = async (req, res) => {
 };
 
 const deleteAssignment = async (req, res) => {
-  try {
-    await Assignment.findByIdAndDelete(req.params.id).catch((err) => {
-      return res.status(400).json({
-        messagae: "something went wrong while trying to delete this assignment",
-      });
+  await Assignment.findByIdAndDelete(req.params.id).catch((err) => {
+    return res.status(400).json({
+      messagae: "something went wrong while trying to delete this assignment",
     });
+  });
+  try {
+
     return res
       .status(200)
       .json({ messagae: "Successfully deleted this assignment" });

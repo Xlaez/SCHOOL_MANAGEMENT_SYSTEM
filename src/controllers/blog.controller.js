@@ -1,3 +1,4 @@
+const { cleanseData } = require("../../utils/cleansing");
 const { Blog } = require("../modules/app.model");
 
 const fetchBlogArticles = async (req, res) => {
@@ -16,9 +17,8 @@ const fetchBlogArticles = async (req, res) => {
 };
 
 const getSingleBloagArticle = async (req, res) => {
-  const { id } = req.params;
   try {
-    const article = await Blog.findOne({ _id: id });
+    const article = await Blog.findOne({ _id: req.params.id });
     if (article === null)
       return res.status(400).json({ message: "Sorry can't find this article" });
     return res.status(200).json({ article: article });
@@ -28,7 +28,7 @@ const getSingleBloagArticle = async (req, res) => {
 };
 
 const getUserArticle = (req, res) => {
-  const article = Blog.find({ userId: req.get("student-access") }).catch((err) => {
+  const article = Blog.find({ userId: req.get("user-access") }).catch((err) => {
     return res.status(400).json(err);
   });
   if (article === null || !article)
@@ -39,13 +39,13 @@ const getUserArticle = (req, res) => {
 };
 
 const createArticle = async (req, res) => {
-  var userId = req.get('student-access')
   const body = req.body;
   const image = req.file;
-  // const userId = req.params.userId;
+  var re = /fuck/i;
+  cleanseData(body.content, re)
   var articles = new Blog({
     ...body,
-    userId: userId,
+    userId: req.get('user-access'),
     image: image.path
   });
   articles = await articles.save();
@@ -59,8 +59,6 @@ const createArticle = async (req, res) => {
 const editArticle = async (req, res) => {
   const body = req.body;
   const { id } = req.params;
-  const image = req.file;
-
   if (!id)
     return res
       .status(400)
