@@ -6,3 +6,4 @@
 <h1>Consuming Api's</h1>
 <p>Check out the routes folder which clearly shows how to consume api end points for each use case</p>
 <p>Make sure to accept all headers automatically sent by the server if attaching to a frontend app</p> 
+<p>My Authentication can be hard to mve around with , i work with headers other than parameters both the id's and access tokens.
