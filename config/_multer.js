@@ -15,8 +15,7 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg" ||
     file.mimetype === "image/pdf" ||
-    file.mimetype === "image/srt" ||
-    file.mimetype === "image/svg"
+    file.mimetype === "image/srt"
   ) {
     cb(null, true);
   } else {

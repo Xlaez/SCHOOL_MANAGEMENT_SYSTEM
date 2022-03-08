@@ -8,7 +8,7 @@ var TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 getToken = (user) => {
   return sign({ id: user._id, email: user.email }, TOKEN_SECRET, {
-    expiresIn: 780000,
+    // expiresIn: 780000,
   });
 };
 

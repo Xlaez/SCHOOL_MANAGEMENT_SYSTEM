@@ -15,7 +15,7 @@ const Users = mongoose.model(
       sectionId: { type: String },
       teacherId: { type: String },
       blackId: { type: Boolean },
-      suspended: { type: Boolean },
+      suspended: { type: Boolean, default: false },
       resetToken: { type: String },
       resetTokenExpiration: { type: String },
     },
@@ -279,6 +279,14 @@ const Drafts = mongoose.model(
   )
 );
 
+const Subjects = mongoose.model(
+  "Students_subjects",
+  new mongoose.Schema({
+    subjects: { type: Array, required: true },
+    userId: { type: String }
+  })
+)
+
 module.exports = {
   Users,
   Assignment,
@@ -286,5 +294,6 @@ module.exports = {
   Register,
   Blog,
   Result,
-  Drafts
+  Drafts,
+  Subjects
 };

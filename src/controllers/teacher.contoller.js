@@ -55,9 +55,11 @@ const uploadTeachersInfo = (req, res) => {
 
 // remember to add teachers id to the students.
 const fetchTeachersStudents = (req, res) => {
-  const teacherheader = req.get('teachers-id')
+  const teacherheader = req.get('teacher-id')
+  if (!teacherheader) return res.status(403).send("Rejected!")
   Users.find({ teacherId: teacherheader }).then(
     data => {
+      if (data == null) return res.status(400).send("error")
       return res.status(200).json({ data })
     }
   ).catch(err => {
