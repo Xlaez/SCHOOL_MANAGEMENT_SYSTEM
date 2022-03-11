@@ -10,8 +10,8 @@ const fetchBlogArticles = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Ooops, they arent any articles to display" });
-    return res.status(200).json({ articles: articles });
-  } catch (err) {
+    return res.status(200).json({ status:true, articles: articles });
+  } catch (err) { 
     return res.status(400).json(err);
   }
 };
@@ -40,17 +40,17 @@ const getUserArticle = (req, res) => {
 
 const createArticle = async (req, res) => {
   const body = req.body;
-  const image = req.file;
+  // const image = req.file;
   var re = /fuck/i;
   cleanseData(body.content, re)
   var articles = new Blog({
     ...body,
     userId: req.get('user-access'),
-    image: image.path
+    // image: image.path
   });
   articles = await articles.save();
   try {
-    return res.status(201).json({ articles: articles });
+    return res.status(201).json({status:true, articles: articles });
   } catch (err) {
     return res.status(400).json(err);
   }
