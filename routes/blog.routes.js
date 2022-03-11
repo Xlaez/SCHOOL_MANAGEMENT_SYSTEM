@@ -15,8 +15,8 @@ const router = Router();
 router.get("/", fetchBlogArticles);
 router.get("/:id", getSingleBloagArticle);
 router.get("/", [isAuth], getUserArticle);
-router.post("/", [isAuth], createArticle);
-router.put("/:id", [isAuth], editArticle);
-router.delete("/:id", [isAuth], deleteArticle);
+router.post("/",  createArticle);
+router.put("/:id",  editArticle);
+router.delete("/:id",  deleteArticle);
 
 module.exports.blogRouter = router;

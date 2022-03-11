@@ -26,6 +26,7 @@ const { isTeacher } = require("./middleware/_is_teacher");
 const { storeRoute } = require("./routes/store.routes");
 const { isSuspended } = require("./middleware/_is_suspended");
 const { subjectsRouter } = require("./routes/subjects.routes");
+const { chatRoute } = require("./routes/chat.routes");
 
 const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' })
 
@@ -54,6 +55,7 @@ server.use('/api/complaints', complaintsRouter)
 server.use('/api/superadmin', [isAuth], [superAdmin], superAdminRoute)
 server.use('/api/store', [isAuth], storeRoute)
 server.use('/api/subjects', [isAuth], subjectsRouter)
+server.use('/api/chat', chatRoute);
 server.use(express.static(path.join(__dirname, "assets", "images")));
 server.use(express.static(path.join(__dirname, "view")));
 server.use(express.static(path.join(__dirname, "public")));
