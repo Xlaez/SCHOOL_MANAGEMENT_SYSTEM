@@ -3,7 +3,7 @@ const { Users } = require("../src/modules/app.model");
 // var role = req.body;
 
 const grantAccess = (req, res, next) => {
-    const userId = req.get('user-access')
+    const userId = req.get('userAccess')
     Users.findOne({ _id: userId }).then(
         data => {
             console.log(data)

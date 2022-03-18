@@ -11,7 +11,9 @@ const header = (req, res, next) => {
     "X-access-token",
     "Class-Id",
     "Section-Id",
-    "userId"
+    "userId",
+    "userAccess",
+    "Authorization"
   );
   next();
 };

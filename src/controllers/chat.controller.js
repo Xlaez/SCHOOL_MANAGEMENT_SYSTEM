@@ -1,4 +1,4 @@
-const { Chat,Messages } = require('../modules/chat.model')
+const { Chat, Messages } = require('../modules/chat.model')
 const encrypt = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 require('dotenv').config()
@@ -53,18 +53,40 @@ const users = async (req, res) => {
     }
 }
 
-const addMessage = async(req,res) =>{
-    try{
-        const{from,to,message} = req.body;
+const addMessage = async (req, res) => {
+    try {
+        const body = req.body;
         const data = await Messages.create({
-            message:{text:message},
-            users:[from, to],
-            sender:from,
+            message: {
+                text: body.message,
+                users: [body.from, body.to],
+                sender: body.from,
+            }
         });
-        if(data)return res.status(201).json({msg:"Message sent successfully"})
-           return res.status(400).json({msg:"Failed to send"}) 
-    }catch(err){
+        if (data) return res.status(201).json({ data: data, msg: "Message sent successfully" })
+        return res.status(400).json({ msg: "Failed to send" })
+    } catch (err) {
         return res.status(400).json(err);
+    }
+}
+
+const getMessages = async (req, res) => {
+    try {
+        const { from, to } = req.body;
+        const messages = await Messages.find({
+            users: {
+                $all: [from, to],
+            },
+        }).sort({ updatedAt: 1 });
+        const newMessages = messages.map((msg) => {
+            return {
+                fromUser: msg.message.sender.toString() === from,
+                message: msg.message.text,
+            }
+        })
+        return res.status(200).json(newMessages)
+    } catch (err) {
+        res.status(400).json(err)
     }
 }
 
@@ -72,5 +94,6 @@ module.exports = {
     chatAuth,
     chatSignIn,
     users,
-    addMessage
+    addMessage,
+    getMessages
 }

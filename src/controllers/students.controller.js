@@ -2,7 +2,7 @@ const { Users, Result } = require("../modules/app.model");
 
 // FETCH STUDENTS DATA
 const fetchStudentsInfo = (req, res) => {
-  const { id } = req.params;
+  const id = req.get("userAccess");
   Users.findOne({ _id: id })
     .then((studentsInfo) => {
       if (studentsInfo === null || !studentsInfo)

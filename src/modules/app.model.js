@@ -201,6 +201,10 @@ const Blog = mongoose.model(
         type: String,
         required: true,
       },
+      author: {
+        type: String,
+      }
+      ,
       userId: String
     },
     {
@@ -261,9 +265,6 @@ const Drafts = mongoose.model(
       header: {
         type: String,
         required: true,
-      },
-      description: {
-        type: String,
       },
       content: {
         type: String,
