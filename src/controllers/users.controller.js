@@ -16,12 +16,12 @@ var TEACHER_S_1 = process.env.ID_TEACHER_SENIOR1
 var TEACHER_S_2 = process.env.ID_TEACHER_SENIOR2
 var TEACHER_S_3 = process.env.ID_TEACHER_SENIOR3
 const createDrafts = async (req, res) => {
-    const id = req.get('user-access');
-    const { body } = req
+    const id = req.get('userAccess');
+    const body = req.body;
     var draft = new Drafts({
         header: body.header,
-        description: body.description,
-        content: encrypt.hashSync(body.content, 7),
+        // content: encrypt.hashSync(body.content, 7),
+        content:body.content,
         userId: id
     })
     draft = await draft.save();
@@ -33,10 +33,9 @@ const createDrafts = async (req, res) => {
 }
 
 const fetchDrafts = (req, res) => {
-    const id = req.get('user-access')
+    const id = req.get('userAccess')
     Drafts.findOne({ userId: id }).then(
         drafts => {
-            encrypt
             if (!drafts) return res.status(400).send("You don't have any drafts")
             return res.status(200).json({ data: drafts })
         }

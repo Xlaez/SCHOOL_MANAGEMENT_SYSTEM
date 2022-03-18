@@ -2,7 +2,9 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const compression = require('compression')
+const cors = require('cors');
 const morgan = require('morgan')
+const io = require('socket.io')
 const { stream } = require('./public/stream')
 const { urlencoded, json } = require("body-parser");
 const { createWriteStream } = require("fs");
@@ -32,6 +34,7 @@ const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.l
 
 const server = express();
 
+server.use(cors());
 server.use(morgan('combined', { stream: accessLogStream }));
 server.use(compression())
 server.set("view engine", "ejs")
@@ -56,7 +59,7 @@ server.use('/api/superadmin', [isAuth], [superAdmin], superAdminRoute)
 server.use('/api/store', [isAuth], storeRoute)
 server.use('/api/subjects', [isAuth], subjectsRouter)
 server.use('/api/chat', chatRoute);
-server.use(express.static(path.join(__dirname, "assets", "images")));
+server.use('/assets', express.static(path.join(__dirname, "assets", "images")));
 server.use(express.static(path.join(__dirname, "view")));
 server.use(express.static(path.join(__dirname, "public")));
 
@@ -64,16 +67,44 @@ server.get('/', (req, res) => {
   res.sendFile(__dirname + 'public', '/index.html')
 })
 
-const port = process.env.PORT || 8080;
-var connection = server.listen(port);
+const port = 8081;
 
 Mongo.then(function (result) {
   console.log(`=========>Mongo client connected at ${port}`);
-  const io = require('./src/mixins/connection.socket').init(connection)
-  // io.of('/stream').on('connection', stream)
-  io.on('connection', (stream) => {
-    console.log('=======>Client connected')
-  })
+
 }).catch((err) => {
   console.log(`=========> ${err}`);
 });
+
+
+// SOCKET AND SERVER INITIALIZATION
+
+// var connection = server.listen(port);
+
+const connection = server.listen(port, () => {
+  console.log('======> server running at', port)
+})
+
+
+
+const socket = io(connection, {
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
+})
+
+global.onlineUsers = new Map();
+
+socket.on("connection", (socket) => {
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);
+  })
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("receive-msg", data.msg);
+    }
+  })
+})

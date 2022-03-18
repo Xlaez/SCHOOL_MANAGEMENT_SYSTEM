@@ -1,19 +1,32 @@
 const { cleanseData } = require("../../utils/cleansing");
-const { Blog } = require("../modules/app.model");
+const { Blog, Users } = require("../modules/app.model");
 
-const fetchBlogArticles = async (req, res) => {
-  const articles = await Blog.find().sort({
-    createdAt: "desc",
-  });
-  try {
-    if (articles === null)
-      return res
-        .status(400)
-        .json({ message: "Ooops, they arent any articles to display" });
-    return res.status(200).json({ status:true, articles: articles });
-  } catch (err) { 
-    return res.status(400).json(err);
-  }
+const fetchBlogArticles = (req, res) => {
+  var currentPage = req.query.page || 1;
+  var perPage = 3;
+  let totalItems;
+  Blog.find().countDocuments().then(
+    count => {
+      totalItems = count;
+      return Blog.find().sort({
+        createdAt: "desc",
+      }).skip((currentPage - 1) * perPage).limit(
+        perPage
+      )
+    })
+    .then(
+      articles => {
+
+        if (articles === null)
+          return res
+            .status(400)
+            .json({ message: "Ooops, they arent any articles to display" });
+
+        return res.status(200).json({ status: true, articles: articles, totalItems: totalItems });
+      })
+    .catch(err => {
+      return res.status(400).json(err);
+    })
 };
 
 const getSingleBloagArticle = async (req, res) => {
@@ -40,17 +53,21 @@ const getUserArticle = (req, res) => {
 
 const createArticle = async (req, res) => {
   const body = req.body;
-  // const image = req.file;
+  const image = req.file;
   var re = /fuck/i;
   cleanseData(body.content, re)
+  const user = await Users.findById(req.get("user-access"));
+  const author = user.fullname;
+  // if (author = null || "" || undefined)author = 'anonymous'; 
   var articles = new Blog({
     ...body,
     userId: req.get('user-access'),
-    // image: image.path
+    image: image.path,
+    author: author
   });
   articles = await articles.save();
   try {
-    return res.status(201).json({status:true, articles: articles });
+    return res.status(201).json({ status: true, articles: articles });
   } catch (err) {
     return res.status(400).json(err);
   }
