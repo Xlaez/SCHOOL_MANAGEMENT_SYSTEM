@@ -34,7 +34,7 @@ const createDrafts = async (req, res) => {
 
 const fetchDrafts = (req, res) => {
     const id = req.get('userAccess')
-    Drafts.findOne({ userId: id }).then(
+    Drafts.find({ userId: id }).then(
         drafts => {
             if (!drafts) return res.status(400).send("You don't have any drafts")
             return res.status(200).json({ data: drafts })
@@ -57,41 +57,41 @@ const deleteDrafts = async (req, res) => {
 const uploadUsersInfo = (req, res) => {
     const body = req.body;
     const file = req.file;
-    const { id } = req.params;
+    const  id  = req.get("userAccess")
 
     if (!file) return res.status(400).json({ message: "FIle type not supported or too large" });
     let updatedUserInfo;
-    Users.findById(id).then(
+     Users.findById(id).then(
 
         student => {
             let teacherId;
             let sectionId;
             let classId;
-            if (body.class === 'junior1' || body.class == 'junior2' || body.class === 'junior3') {
+            if (body.classs === 'junior1' || body.classs == 'junior2' || body.classs === 'junior3') {
                 sectionId = JUNIOR_ID
                 classId = JUNIOR_ID
-                if (body.class === 'junior1') {
+                if (body.classs === 'junior1') {
                     classId = classId.concat(JUNIOR1)
                     teacherId = TEACHER_J_1
-                } else if (body.class === 'junior2') {
+                } else if (body.classs === 'junior2') {
                     classId = classId.concat(JUNIOR2)
                     teacherId = TEACHER_J_2
-                } else if (body.class === 'junior3') {
+                } else if (body.classs === 'junior3') {
                     teacherId = TEACHER_J_3
                     classId = classId.concat(JUNIOR3)
                 }
             }
-            if (body.class === 'senior1' || body.class == 'senior2' || body.class == 'senior3') {
+            if (body.classs === 'senior1' || body.classs == 'senior2' || body.classs == 'senior3') {
 
                 sectionId = SENIOR_ID
                 classId = SENIOR_ID
-                if (body.class === 'senior1') {
+                if (body.classs === 'senior1') {
                     teacherId = TEACHER_S_1
                     classId = classId.concat(SENIOR1)
-                } else if (body.class === 'senior2') {
+                } else if (body.classs === 'senior2') {
                     teacherId = TEACHER_S_2
                     classId = classId.concat(SENIOR2)
-                } else if (body.class === 'senior3') {
+                } else if (body.classs === 'senior3') {
                     teacherId = TEACHER_S_3
                     classId = classId.concat(SENIOR3)
                 }

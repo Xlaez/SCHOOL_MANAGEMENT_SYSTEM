@@ -56,12 +56,12 @@ const createArticle = async (req, res) => {
   const image = req.file;
   var re = /fuck/i;
   cleanseData(body.content, re)
-  const user = await Users.findById(req.get("user-access"));
+  const user = await Users.findById(req.get("userAccess"));
   const author = user.fullname;
   // if (author = null || "" || undefined)author = 'anonymous'; 
   var articles = new Blog({
     ...body,
-    userId: req.get('user-access'),
+    userId: req.get('userAccess'),
     image: image.path,
     author: author
   });

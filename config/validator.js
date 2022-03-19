@@ -15,7 +15,7 @@ const isEmail = (req, res, next) => {
 const isPassword = (req, res, next) => {
   var body = req.body;
   var user = body.password;
-  checkPassword = /^([a-zA-Z0-9_\-\(\)\%\@\$\+\.]){6,14}$/;
+  checkPassword = /^([a-zA-Z0-9_\-\(\)\%\@\$\+\.]){8,30}$/;
   if (user.match(checkPassword)) {
     next();
   } else {
