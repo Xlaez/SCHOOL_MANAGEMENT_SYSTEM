@@ -10,5 +10,4 @@ router.delete('/drafts/:id', deleteDrafts);
 router.post('/upload/:id', uploadUsersInfo);
 router.put('/upload/:id', editUserInfo)
 
-
 module.exports.userRouter = router;

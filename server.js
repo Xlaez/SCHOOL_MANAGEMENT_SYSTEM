@@ -45,6 +45,7 @@ server.use(
 );
 server.use(header);
 
+server.use('/assets/images', express.static(path.join(__dirname, "assets", "images")));
 server.use("/api/auth", authRouter);
 server.use("/api/user", [isAuth], userRouter);
 server.use("/api/admin", [isAuth], adminRouthe);
@@ -59,7 +60,6 @@ server.use('/api/superadmin', [isAuth], [superAdmin], superAdminRoute)
 server.use('/api/store', [isAuth], storeRoute)
 server.use('/api/subjects', [isAuth], subjectsRouter)
 server.use('/api/chat', chatRoute);
-server.use('/assets', express.static(path.join(__dirname, "assets", "images")));
 server.use(express.static(path.join(__dirname, "view")));
 server.use(express.static(path.join(__dirname, "public")));
 
