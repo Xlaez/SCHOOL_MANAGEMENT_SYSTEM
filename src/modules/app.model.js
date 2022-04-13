@@ -7,18 +7,7 @@ const Users = mongoose.model(
       fullname: { type: String, required: [true, "fill out this input area"] },
       email: { type: String, required: [true, "enter a valid email "] },
       password: { type: String, required: [true, "enter a password "] },
-      age:{type:String},
-      gender:{type:String},
       role: { type: String },
-      username: { type: String },
-      image: { type: String },
-      phone: { type: String },
-      classs: { type: String },
-      classId: { type: String },
-      sectionId: { type: String },
-      teacherId: { type: String },
-      blackId: { type: Boolean },
-      suspended: { type: Boolean, default: false },
       resetToken: { type: String },
       resetTokenExpiration: { type: String },
     },
@@ -27,6 +16,47 @@ const Users = mongoose.model(
     }
   )
 );
+
+const Teacher = mongoose.model(
+  "Teacher_Model",
+  new mongoose.Schema(
+    {
+      name: { type: String, required: [true, "fill out this input area"] },
+      email: { type: String, required: [true, "enter a valid email"] },
+      password: { type: String },
+      class: { type: String },
+      classId: { type: String },
+      sectionId: { type: String },
+      teacherId: { type: String },
+      image:{type:String},
+      resetToken: { type: String },
+      resetTokenExpiration: { type: String },
+    },
+    {
+      timestamps: true
+    }
+  )
+)
+
+
+const Admin = mongoose.model(
+  "Admin_Model",
+  new mongoose.Schema(
+    {
+      name: { type: String, required: [true, "fill out this input area"] },
+      email: { type: String, required: [true, "enter a valid email"] },
+      password: { type: String, required: [true, "enter  a password"] },
+      adminId: { type: String },
+      adminType: { type: String },
+      image: { type: String },
+      resetToken: { type: String },
+      resetTokenExpiration: { type: String },
+    },
+    {
+      timestamps: true
+    }
+  )
+)
 
 const Assignment = mongoose.model(
   "Assignment_portal",
@@ -68,6 +98,10 @@ const Register = mongoose.model(
   "Registered_students",
   new mongoose.Schema(
     {
+      admitted: {
+        type: Boolean,
+        default: false,
+      },
       image: {
         type: String,
         required: true,
@@ -101,7 +135,7 @@ const Register = mongoose.model(
       },
       yearOfEntry: {
         type: String,
-        required: true,
+        // required: true,
       },
       religion: {
         type: String,
@@ -130,7 +164,7 @@ const Register = mongoose.model(
       },
       numberOfSiblings: {
         type: String,
-        required: true,
+        // required: true,
       },
       nextOfKinPhone: {
         type: String,
@@ -140,15 +174,12 @@ const Register = mongoose.model(
         type: String,
         required: true,
       },
-      genderOfSiblings: {
-        type: String,
-        required: true,
-      },
+
       placeAmongSiblings: {
         type: String,
         required: true,
       },
-      favouritSubject: {
+      favouriteSubject: {
         type: String,
         required: true,
       },
@@ -159,13 +190,17 @@ const Register = mongoose.model(
         type: String,
         required: true,
       },
-      sponsorsPhone: {
+      sponsorsContact: {
+        type: String,
+        // required: true,
+      },
+      sponsorsName: {
         type: String,
         required: true,
       },
       relationshipWithSponsor: {
         type: String,
-        required: true,
+        // required: true,
       },
       sponsorEmail: {
         type: String,
@@ -174,10 +209,30 @@ const Register = mongoose.model(
         type: String,
         required: true,
       },
+      class: {
+        type: String,
+      },
+
+      sectionId: {
+        type: String,
+      },
+      classId: {
+        type: String,
+      },
+      teacherId: {
+        type: String,
+      },
       sponsorAddress: {
+        type: String,
+        // required: true,
+      },
+      relationShipStatus: {
         type: String,
         required: true,
       },
+      parentRelationShipStatus: {
+        type: String,
+      }
     },
     {
       timestamps: true,
@@ -299,5 +354,7 @@ module.exports = {
   Blog,
   Result,
   Drafts,
-  Subjects
+  Subjects,
+  Teacher,
+  Admin
 };

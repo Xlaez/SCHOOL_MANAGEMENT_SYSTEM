@@ -1,4 +1,4 @@
-var { Users, Register } = require("../modules/app.model");
+var { Users, Register, Teacher, Admin } = require("../modules/app.model");
 const { sign, verify, decode } = require("jsonwebtoken");
 const { compareSync, hashSync } = require("bcryptjs");
 const { sendMail } = require("../../config/_mail");
@@ -8,7 +8,7 @@ var TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 getToken = (user) => {
   return sign({ id: user._id, email: user.email }, TOKEN_SECRET, {
-    // expiresIn: 780000,
+    expiresIn: 360000,
   });
 };
 
@@ -18,11 +18,12 @@ const signUp = async (req, res) => {
   // if (!studentAccess) return res.status(400).send("Can't recognize this user")
   const body = req.body;
   var password = body.password;
-  const user = await Users.findOne({ email: body.email });
-  if (user) {
+  console.log(body.email)
+  const user = await Register.findOne({ email: body.email });
+  if (!user) {
     return res
       .status(400)
-      .json({ message: "This user already exists, try Loging in instead" });
+      .json({ message: "This user does not exists" });
   }
 
   // var isVerified = Register.findOne({ regNo: studentAccess })
@@ -42,28 +43,88 @@ const signUp = async (req, res) => {
   });
 };
 
+const teacherSignup = async (req, res) => {
+  const body = req.body;
+  var isTeacher = await Teacher.findOne({ email: req.body.email });
+  if (!isTeacher) return res.status(500).json({ message: "this teacher does not exist" });
+  isTeacher.password = hashSync(body.password, 12);
+  var token = getToken(isTeacher)
+  isTeacher = await isTeacher.save();
+  return res.status(201).json({
+    message: "successfully signup",
+    token: token,
+    userId: isTeacher._id,
+    teacherId: isTeacher.teacherId
+  })
+}
+
+const teacherLogin = async (req, res) => {
+  const body = req.body;
+  var isTeacher = await Teacher.findOne({ email: req.body.email });
+  if (!isTeacher) return res.status(500).json({ message: "this teacher does not exist" })
+  var verify = await compareSync(body.password, isTeacher.password);
+  if (!verify) return res.status(403).json({ message: "User has no permission" })
+  var token = getToken(isTeacher);
+  return res.status(201).json({ token: token, userId: isTeacher._id, teacherId: isTeacher.teacherId })
+}
+
+const adminSignup = async (req, res) => {
+  const body = req.body;
+  const image = req.file;
+  if (!req.file) return res.status(500).send("no image");
+  var isadmin = await Admin.findOne({ email: req.body.email });
+  if (isadmin) return res.status(500).json({ message: "this admin already exist" });
+  var admin = new Admin({
+    name: body.name,
+    email: body.email,
+    password: hashSync(body.password, 12),
+    adminType: "primary",
+    image: image.path,
+    adminId: 0012
+  })
+  admin = await admin.save();
+  var token = getToken(admin)
+  return res.status(201).json({
+    message: "successfully signup",
+    token: token,
+    adminId: admin._id,
+  })
+}
+
+const adminLogin = async (req, res) => {
+  const body = req.body;
+  var isAdmin = await Admin.findOne({ email: req.body.email });
+  if (!isAdmin) return res.status(500).json({ message: "this teacher doess not exist" })
+  var verify = await compareSync(body.password, isAdmin.password);
+  if (!verify) return res.status(403).json({ mesage: "User has no permission" })
+  var token = getToken(isAdmin);
+  isAdmin.role = "admin"
+  isAdmin = await isAdmin.save();
+  return res.status(201).json({ token: token, userId: isAdmin._id, adminId: isAdmin.adminId })
+}
+
 //LOGIN FOR ANY USER
 const Login = async (req, res) => {
-  // const userAccess = req.get("user-access")
-  // if (!userAccess) return res.status(400).send("Can't recognize this user")
   const body = req.body;
   const user = await Users.findOne({ email: body.email });
   if (!user) {
     return res
-      .status(400)
+      .status(500)
       .json({ message: "User not found, trying signing up!" });
   }
+  var reg_user = await Register.findOne({ email: body.email });
+  if (!reg_user) return res.status(400).json({ message: "User not found, trying signing up!" })
+  if (reg_user.admitted === false) return res.status(403).json({ message: "User hasn't been admitted yet" });
   var validPassword = compareSync(body.password, user.password);
   if (!validPassword)
     return res.status(400).send("Either email or password is wrong");
-  // var isVerified = Register.findOne({ userId: userAccess })
-  // if (!isVerified) return res.status(400).json({ message: "This user can't be found in users" })
 
   var token = getToken(user);
   return res.status(201).json({
     message: "User successfully sign in",
     token: token,
     userId: user._id,
+    regId: reg_user._id
   });
 };
 
@@ -139,4 +200,8 @@ module.exports = {
   Login,
   reset,
   newPassword,
+  teacherSignup,
+  teacherLogin,
+  adminLogin,
+  adminSignup
 };

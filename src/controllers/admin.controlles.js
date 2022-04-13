@@ -1,4 +1,4 @@
-const { Users, Notice, Register } = require("../modules/app.model");
+const { Users, Notice, Register, Teacher, Admin } = require("../modules/app.model");
 const { getIo } = require('../mixins/connection.socket')
 require("dotenv").config();
 
@@ -10,7 +10,70 @@ var SENIOR3 = process.env.ID_SENIOR3
 var JUNIOR1 = process.env.ID_JUNIOR1
 var JUNIOR2 = process.env.ID_JUNIOR2
 var JUNIOR3 = process.env.ID_JUNIOR3
+var TEACHER_J_1 = process.env.ID_TEACHER_JUNIOR1
+var TEACHER_J_2 = process.env.ID_TEACHER_JUNIOR2
+var TEACHER_J_3 = process.env.ID_TEACHER_JUNIOR3
+var TEACHER_S_1 = process.env.ID_TEACHER_SENIOR1
+var TEACHER_S_2 = process.env.ID_TEACHER_SENIOR2
+var TEACHER_S_3 = process.env.ID_TEACHER_SENIOR3
 
+const GetAdminData = async (req, res) => {
+  var { id } = req.params;
+  var admin = await Admin.findById(id);
+  if (!admin) return res.status(500).json({ message: "Admin doesn't exist" })
+  return res.status(200).json({ image: admin.image, name: admin.name, email: admin.email, adminType: admin.adminType });
+}
+
+const AdmitStudent = (req, res) => {
+  Register.findById(req.params.id).then(
+
+    student => {
+      let teacherId;
+      let sectionId;
+      let classId;
+      if (student.classOfEntry === 'junior1' || student.classOfEntry == 'junior2' || student.classOfEntry === 'junior3') {
+        sectionId = JUNIOR_ID
+        classId = JUNIOR_ID
+        if (dent.classOfEntry === 'junior1') {
+          classId = classId.concat(JUNIOR1)
+          teacherId = TEACHER_J_1
+        } else if (student.classOfEntry === 'junior2') {
+          classId = classId.concat(JUNIOR2)
+          teacherId = TEACHER_J_2
+        } else if (student.classOfEntry === 'junior3') {
+          teacherId = TEACHER_J_3
+          classId = classId.concat(JUNIOR3)
+        }
+      }
+      if (student.classOfEntry === 'senior1' || student.classOfEntry == 'senior2' || student.classOfEntry == 'senior3') {
+
+        sectionId = SENIOR_ID
+        classId = SENIOR_ID
+        if (student.classOfEntry === 'senior1') {
+          teacherId = TEACHER_S_1
+          classId = classId.concat(SENIOR1)
+        } else if (student.classOfEntry === 'senior2') {
+          teacherId = TEACHER_S_2
+          classId = classId.concat(SENIOR2)
+        } else if (student.classOfEntry === 'senior3') {
+          teacherId = TEACHER_S_3
+          classId = classId.concat(SENIOR3)
+        }
+      }
+      student.admitted = true;
+      student.class = student.classOfEntry;
+      student.classId = classId;
+      student.sectionId = sectionId;
+      student.teacherId = teacherId;
+      student.save();
+      return res.status(201).json({ message: "student admitted" })
+    }
+  ).catch(
+    err => {
+      return res.status(500).send("An error occured", err);
+    }
+  )
+}
 
 // Fetch all students for a class
 const FetchStudentsForJunior = (req, res) => {
@@ -105,6 +168,57 @@ const FetchBlackList = (req, res) => {
     });
 };
 
+const AddTeacher = async (req, res) => {
+  const body = req.body;
+  const image = req.file;
+  if (!req.file) return res.status(500).json({ message: "No image provided" })
+  var check = await Teacher.findOne({ email: body.email });
+  if (check) return res.status(500).json({ message: "Already registered in database" })
+  let teacherId;
+  let sectionId;
+  let classId;
+  if (body.class === 'junior1' || body.class == 'junior2' || body.class === 'junior3') {
+    sectionId = JUNIOR_ID
+    classId = JUNIOR_ID
+    if (body.class === 'junior1') {
+      classId = classId.concat(JUNIOR1)
+      teacherId = TEACHER_J_1
+    } else if (body.class === 'junior2') {
+      classId = classId.concat(JUNIOR2)
+      teacherId = TEACHER_J_2
+    } else if (body.class === 'junior3') {
+      teacherId = TEACHER_J_3
+      classId = classId.concat(JUNIOR3)
+    }
+  }
+  if (body.class === 'senior1' || body.class == 'senior2' || body.class == 'senior3') {
+
+    sectionId = SENIOR_ID
+    classId = SENIOR_ID
+    if (body.class === 'senior1') {
+      teacherId = TEACHER_S_1
+      classId = classId.concat(SENIOR1)
+    } else if (body.class === 'senior2') {
+      teacherId = TEACHER_S_2
+      classId = classId.concat(SENIOR2)
+    } else if (body.class === 'senior3') {
+      teacherId = TEACHER_S_3
+      classId = classId.concat(SENIOR3)
+    }
+  }
+
+  var teacher = new Teacher({
+    ...body,
+    classId: classId,
+    sectionId: sectionId,
+    teacherId: teacherId,
+    image: image.path
+  });
+  teacher = await teacher.save();
+  return res.status(201).json({ message: "teacher addded successfully", data: teacher });
+}
+
+
 const FetchTeachers = (req, res) => {
   Users.find({ role: "teacher" })
     .then((teachers) => {
@@ -184,4 +298,7 @@ module.exports = {
   FetchTeachers,
   FetchNonTeachers,
   postNotice,
+  AdmitStudent,
+  AddTeacher,
+  GetAdminData
 };

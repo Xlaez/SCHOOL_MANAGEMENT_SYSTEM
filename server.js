@@ -5,6 +5,7 @@ const compression = require('compression')
 const cors = require('cors');
 const morgan = require('morgan')
 const io = require('socket.io')
+const { testRoute } = require('./routes/test.routes')
 const { stream } = require('./public/stream')
 const { urlencoded, json } = require("body-parser");
 const { createWriteStream } = require("fs");
@@ -60,6 +61,7 @@ server.use('/api/superadmin', [isAuth], [superAdmin], superAdminRoute)
 server.use('/api/store', [isAuth], storeRoute)
 server.use('/api/subjects', [isAuth], subjectsRouter)
 server.use('/api/chat', chatRoute);
+server.use('/api/pay', testRoute)
 server.use(express.static(path.join(__dirname, "view")));
 server.use(express.static(path.join(__dirname, "public")));
 
