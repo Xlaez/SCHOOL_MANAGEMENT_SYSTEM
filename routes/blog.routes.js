@@ -17,6 +17,6 @@ router.get("/:id",[isAuth] ,getSingleBloagArticle);
 router.get("/", [isAuth], getUserArticle);
 router.post("/", [isAuth] ,createArticle);
 router.put("/:id", [isAuth], editArticle);
-router.delete("/:id",[isAuth] , deleteArticle);
+router.delete("/:id",[isAuth] , deleteArticle);   
 
 module.exports.blogRouter = router;

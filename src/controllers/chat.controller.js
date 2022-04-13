@@ -1,4 +1,4 @@
-const { Chat, Messages } = require('../modules/chat.model')
+const { Chat, Messages, Posts } = require('../modules/chat.model')
 const encrypt = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 require('dotenv').config()
@@ -90,10 +90,31 @@ const getMessages = async (req, res) => {
     }
 }
 
+const storePosts = async (req, res) => {
+    try {
+        const body = req.body;
+        const data = await Posts.create({
+            posts: {
+                content: body.content,
+                comments: {
+                    text: body.text,
+                    users: [body.from, body.second]
+                },
+                poster: body.from,
+            }
+        })
+        if (data) return res.status(201).json({ data: data, msg: "Message sent successfully" })
+        return res.status(400).json({ msg: "Failed to send" })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     chatAuth,
     chatSignIn,
     users,
     addMessage,
-    getMessages
+    getMessages,
+    storePosts,
 }

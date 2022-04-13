@@ -1,4 +1,4 @@
-const { Users, Assignment, Result, Drafts } = require("../modules/app.model");
+const { Users, Assignment, Result, Drafts, Register } = require("../modules/app.model");
 const encrypt = require('bcryptjs')
 require("dotenv").config();
 var JUNIOR_ID = process.env.ID_JUNIORCLASS
@@ -21,7 +21,7 @@ const createDrafts = async (req, res) => {
     var draft = new Drafts({
         header: body.header,
         // content: encrypt.hashSync(body.content, 7),
-        content:body.content,
+        content: body.content,
         userId: id
     })
     draft = await draft.save();
@@ -57,11 +57,11 @@ const deleteDrafts = async (req, res) => {
 const uploadUsersInfo = (req, res) => {
     const body = req.body;
     const file = req.file;
-    const  id  = req.get("userAccess")
+    const id = req.get("userAccess")
 
     if (!file) return res.status(400).json({ message: "FIle type not supported or too large" });
     let updatedUserInfo;
-     Users.findById(id).then(
+    Users.findById(id).then(
 
         student => {
             let teacherId;
@@ -141,11 +141,30 @@ const editUserInfo = async (req, res) => {
     }
 }
 
+const fetchStudentsData = async (req, res) => {
+    var student = await Register.findById(req.params.id);
+
+    if (!student) return res.status(400).json({ message: "Student not found" });
+
+    return res.status(200).json({ status: "success", data: student });
+}
+const editStudentImage = async (req, res) => {
+    var image = req.file;
+    if (!image) return res.status(500).json({ message: "No image uploaded" })
+    var update = await Register.findById(req.params.id);
+    if (!update) return res.status(500).json({ message: "An error occured", status: "fail" });
+    update.image = image.path;
+    update = await update.save()
+    return res.status(201).json({ message: "success", update })
+}
+
 module.exports = {
     uploadUsersInfo,
     editUserInfo,
     createDrafts,
     fetchDrafts,
     editDrafts,
-    deleteDrafts
+    deleteDrafts,
+    fetchStudentsData,
+    editStudentImage
 }

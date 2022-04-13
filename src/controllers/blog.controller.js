@@ -57,6 +57,7 @@ const createArticle = async (req, res) => {
   var re = /fuck/i;
   cleanseData(body.content, re)
   const user = await Users.findById(req.get("userAccess"));
+  console.log(req.get("Authorization"))
   const author = user.fullname;
   // if (author = null || "" || undefined)author = 'anonymous'; 
   var articles = new Blog({
@@ -74,7 +75,13 @@ const createArticle = async (req, res) => {
 };
 
 const editArticle = async (req, res) => {
-  const body = req.body;
+  const image = req.file;
+  const body ={
+      title:req.body.title,
+      description:req.body.description,
+      content:req.body.content,
+      image:image.path,
+  }
   const { id } = req.params;
   if (!id)
     return res
