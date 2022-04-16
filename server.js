@@ -35,10 +35,7 @@ const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.l
 
 const server = express();
 
-server.use(cors({
-     origins '*',
-     resource '*', :headers => :any, :methods => [:get, :post, :patch, :delete, :options]
-}));
+server.use(cors());
 
 server.use(morgan('combined', { stream: accessLogStream }));
 server.use(compression())
