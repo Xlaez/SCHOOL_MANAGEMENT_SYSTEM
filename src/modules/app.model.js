@@ -28,7 +28,7 @@ const Teacher = mongoose.model(
       classId: { type: String },
       sectionId: { type: String },
       teacherId: { type: String },
-      image:{type:String},
+      image: { type: String },
       resetToken: { type: String },
       resetTokenExpiration: { type: String },
     },
@@ -341,8 +341,67 @@ const Drafts = mongoose.model(
 const Subjects = mongoose.model(
   "Students_subjects",
   new mongoose.Schema({
-    subjects: { type: Array, required: true },
-    userId: { type: String }
+    maths: {
+      type: Boolean,
+      default: false,
+    },
+    english: {
+      type: Boolean,
+      default: false,
+    },
+    civic: {
+      type: Boolean,
+      default: false,
+    },
+    literature: {
+      type: Boolean,
+      default: false,
+    },
+    chemistry: {
+      type: Boolean,
+      default: false,
+    },
+    physics: {
+      type: Boolean,
+      default: false,
+    },
+    biology: {
+      type: Boolean,
+      default: false,
+    },
+    economics: {
+      type: Boolean,
+      default: false,
+    },
+    fmaths: {
+      type: Boolean,
+      default: false,
+    },
+    faccount: {
+      type: Boolean,
+      default: false,
+    },
+    commerce: {
+      type: Boolean,
+      default: false,
+    },
+    dprocessing: {
+      type: Boolean,
+      default: false,
+    },
+    government: {
+      type: Boolean,
+      default: false,
+    },
+    geography: {
+      type: Boolean,
+      default: false,
+    },
+    teacherId: {
+      type: String,
+    }
+  }, {
+    timestamps: true,
   })
 )
 

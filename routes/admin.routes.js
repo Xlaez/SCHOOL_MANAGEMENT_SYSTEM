@@ -11,8 +11,10 @@ const {
   suspendStudent,
   AdmitStudent,
   AddTeacher,
-  GetAdminData
+  GetAdminData,
+  AdmitStudentByEmail,
 } = require("../src/controllers/admin.controlles");
+const { fetchStudentDataByEmail } = require("../src/controllers/users.controller");
 
 const router = Router();
 
@@ -23,8 +25,10 @@ router.get("/registered", FetchRegisteredStudents);
 router.get('/admin/:id', GetAdminData)
 router.post("/add/teacher", AddTeacher)
 router.post("/blacklisted", [grantAccess], FetchBlackList);
+router.post('/admit', AdmitStudentByEmail)
 router.post('/admit/:id', AdmitStudent)
 router.post('/suspend', [grantAccess], suspendStudent)
 router.get("/teachers", [grantAccess], FetchTeachers);
 router.post("/notice", [grantAccess], postNotice);
+router.post('/sort/student', fetchStudentDataByEmail);
 module.exports.adminRouthe = router;

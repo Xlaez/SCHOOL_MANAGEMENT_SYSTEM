@@ -148,6 +148,15 @@ const fetchStudentsData = async (req, res) => {
 
     return res.status(200).json({ status: "success", data: student });
 }
+
+const fetchStudentDataByEmail = async (req, res) => {
+    var student = await Register.findOne({ email: req.body.email })
+
+    if (!student) return res.status(400).json({ message: "Student not found" });
+
+    return res.status(200).json({ status: "success", data: student });
+}
+
 const editStudentImage = async (req, res) => {
     var image = req.file;
     if (!image) return res.status(500).json({ message: "No image uploaded" })
@@ -166,5 +175,6 @@ module.exports = {
     editDrafts,
     deleteDrafts,
     fetchStudentsData,
-    editStudentImage
+    editStudentImage,
+    fetchStudentDataByEmail
 }
