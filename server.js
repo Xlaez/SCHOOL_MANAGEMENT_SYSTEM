@@ -51,7 +51,7 @@ server.use("/api/auth", authRouter);
 server.use("/api/user", [isAuth], userRouter);
 server.use("/api/admin", [isAuth], adminRouthe);
 server.use("/api/student", [isAuth], studentRouter);
-server.use("/api/teacher", [isAuth], [isTeacher], staffRouter);
+server.use("/api/teacher", [isAuth], staffRouter);
 server.use("/api/notice", [isAuth], noticeRouthe);
 server.use("/api/assignments", [isAuth], assignmentRouter);
 server.use("/api/articles", blogRouter);

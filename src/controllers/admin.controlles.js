@@ -75,6 +75,58 @@ const AdmitStudent = (req, res) => {
   )
 }
 
+const AdmitStudentByEmail = (req, res) => {
+  Register.findOne({ email: req.body.email }).then(
+
+    student => {
+      let teacherId;
+      let sectionId;
+      let classId;
+      if (student.classOfEntry === 'junior1' || student.classOfEntry == 'junior2' || student.classOfEntry === 'junior3') {
+        sectionId = JUNIOR_ID
+        classId = JUNIOR_ID
+        if (dent.classOfEntry === 'junior1') {
+          classId = classId.concat(JUNIOR1)
+          teacherId = TEACHER_J_1
+        } else if (student.classOfEntry === 'junior2') {
+          classId = classId.concat(JUNIOR2)
+          teacherId = TEACHER_J_2
+        } else if (student.classOfEntry === 'junior3') {
+          teacherId = TEACHER_J_3
+          classId = classId.concat(JUNIOR3)
+        }
+      }
+      if (student.classOfEntry === 'senior1' || student.classOfEntry == 'senior2' || student.classOfEntry == 'senior3') {
+
+        sectionId = SENIOR_ID
+        classId = SENIOR_ID
+        if (student.classOfEntry === 'senior1') {
+          teacherId = TEACHER_S_1
+          classId = classId.concat(SENIOR1)
+        } else if (student.classOfEntry === 'senior2') {
+          teacherId = TEACHER_S_2
+          classId = classId.concat(SENIOR2)
+        } else if (student.classOfEntry === 'senior3') {
+          teacherId = TEACHER_S_3
+          classId = classId.concat(SENIOR3)
+        }
+      }
+      student.admitted = true;
+      student.class = student.classOfEntry;
+      student.classId = classId;
+      student.sectionId = sectionId;
+      student.teacherId = teacherId;
+      student.save();
+      return res.status(201).json({ message: "student admitted" })
+    }
+  ).catch(
+    err => {
+      return res.status(500).send("An error occured", err);
+    }
+  )
+}
+
+
 // Fetch all students for a class
 const FetchStudentsForJunior = (req, res) => {
   Users.find({ sectionId: JUNIOR_ID })
@@ -300,5 +352,6 @@ module.exports = {
   postNotice,
   AdmitStudent,
   AddTeacher,
-  GetAdminData
+  GetAdminData,
+  AdmitStudentByEmail
 };

@@ -14,8 +14,6 @@ getToken = (user) => {
 
 //SIGNUP A NEW STUDENT
 const signUp = async (req, res) => {
-  // const studentAccess = req.get("student-access")
-  // if (!studentAccess) return res.status(400).send("Can't recognize this user")
   const body = req.body;
   var password = body.password;
   console.log(body.email)
@@ -25,9 +23,6 @@ const signUp = async (req, res) => {
       .status(400)
       .json({ message: "This user does not exists" });
   }
-
-  // var isVerified = Register.findOne({ regNo: studentAccess })
-  // if (!isVerified) return res.status(400).json({ message: "This user can't be found in reg " })
 
   var users = new Users({
     fullname: body.fullname,
@@ -44,11 +39,16 @@ const signUp = async (req, res) => {
 };
 
 const teacherSignup = async (req, res) => {
+
   const body = req.body;
+
   var isTeacher = await Teacher.findOne({ email: req.body.email });
+
   if (!isTeacher) return res.status(500).json({ message: "this teacher does not exist" });
   isTeacher.password = hashSync(body.password, 12);
+
   var token = getToken(isTeacher)
+
   isTeacher = await isTeacher.save();
   return res.status(201).json({
     message: "successfully signup",
@@ -60,19 +60,29 @@ const teacherSignup = async (req, res) => {
 
 const teacherLogin = async (req, res) => {
   const body = req.body;
+
   var isTeacher = await Teacher.findOne({ email: req.body.email });
+
   if (!isTeacher) return res.status(500).json({ message: "this teacher does not exist" })
+
   var verify = await compareSync(body.password, isTeacher.password);
+
   if (!verify) return res.status(403).json({ message: "User has no permission" })
+
   var token = getToken(isTeacher);
+
   return res.status(201).json({ token: token, userId: isTeacher._id, teacherId: isTeacher.teacherId })
 }
 
 const adminSignup = async (req, res) => {
   const body = req.body;
+
   const image = req.file;
+
   if (!req.file) return res.status(500).send("no image");
+
   var isadmin = await Admin.findOne({ email: req.body.email });
+
   if (isadmin) return res.status(500).json({ message: "this admin already exist" });
   var admin = new Admin({
     name: body.name,

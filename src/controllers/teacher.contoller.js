@@ -1,18 +1,17 @@
-const { Users, Assignment, Result, Drafts } = require("../modules/app.model");
+const { Users, Assignment, Result, Drafts, Subjects, Teacher, Register } = require("../modules/app.model");
 require("dotenv").config();
 
 const fetchTeachersData = (req, res) => {
   const { id } = req.params;
-  Users.findOne({ _id: id })
+  Teacher.findById(id)
     .then((teachersInfo) => {
       if (teachersInfo === null || !teachersInfo)
         return res
-          .status(400)
+          .status(500)
           .json({ message: "Couldn't get teachers information" });
-      if (teachersInfo.role !== 'teacher') return res.status(400).send("You are not registerd as a teacher")
       return res.status(200).json({
-        message: `Found ${teachersInfo.fullname} data`,
-        data: teachersInfo,
+        message: `Found ${teachersInfo.name} data`,
+        data: teachersInfo
       });
     })
     .catch((err) => {
@@ -53,11 +52,10 @@ const uploadTeachersInfo = (req, res) => {
     });
 };
 
-// remember to add teachers id to the students.
 const fetchTeachersStudents = (req, res) => {
-  const teacherheader = req.get('teacher-id')
-  if (!teacherheader) return res.status(403).send("Rejected!")
-  Users.find({ teacherId: teacherheader }).then(
+  const { id } = req.params
+  if (!id) return res.status(403).send("Rejected!")
+  Register.find({ teacherId: id }).then(
     data => {
       if (data == null) return res.status(400).send("error")
       return res.status(200).json({ data })
@@ -112,6 +110,30 @@ const editResult = async (req, res) => {
   return res.status(201).json({ message: 'result updated successfully', data: result });
 }
 
+const setSubjects = async (req, res) => {
+  const body = req.body;
+  const subjects = await Subjects.create({
+    ...body,
+  })
+  if (!subjects) return res.status(500).json({ message: "An error occured" })
+  return res.status(201).json({ data: subjects })
+}
+
+const isSubjectSet = async (req, res) => {
+  var confirm = await Subjects.findOne({ teacherId: req.params.id });
+
+  if (!confirm) return res.status(500).json({ message: "This teacher has no access" });
+
+  return res.status(200).json({ data: "ok", confirm });
+}
+
+const subjects = async (req, res) => {
+  var confirm = await Subjects.findOne({ teacherId: req.params.id });
+
+  if (!confirm) return res.status(500).json({ message: "This teacher has no access" });
+
+  return res.status(200).json([confirm]);
+}
 
 
 module.exports = {
@@ -121,5 +143,7 @@ module.exports = {
   postAssignment,
   createStudentresult,
   editResult,
-
+  setSubjects,
+  isSubjectSet,
+  subjects
 };
