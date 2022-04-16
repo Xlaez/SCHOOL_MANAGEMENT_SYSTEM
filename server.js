@@ -35,10 +35,8 @@ const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.l
 
 const server = express();
 
-server.use(cors({
-     origins '*',
-     resource '*', :headers => :any, :methods => [:get, :post, :patch, :delete, :options]
-   }));
+server.use(header);
+server.use(cors();
 server.use(morgan('combined', { stream: accessLogStream }));
 server.use(compression())
 server.set("view engine", "ejs")
@@ -47,7 +45,7 @@ server.use(json());
 server.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
-server.use(header);
+
 
 server.use('/assets/images', express.static(path.join(__dirname, "assets", "images")));
 server.use("/api/auth", authRouter);
