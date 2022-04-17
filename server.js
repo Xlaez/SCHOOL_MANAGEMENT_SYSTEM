@@ -35,10 +35,9 @@ const accessLogStream = createWriteStream(path.join(__dirname, 'logs', 'access.l
 
 const server = express();
 
-// server.use(header);
 
 var corsOptions = {
-  origin: "localhost:3000",
+  origin: "*",
 };
 
 server.use(cors(corsOptions));
@@ -50,6 +49,7 @@ server.use(json());
 server.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
+server.use(header);
 
 
 server.use('/assets/images', express.static(path.join(__dirname, "assets", "images")));
