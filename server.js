@@ -41,7 +41,7 @@ var corsOptions = {
   origin: "*",
 };
 
-server.use(cors(corsOptions));
+// server.use(cors(corsOptions));
 server.use(morgan('combined', { stream: accessLogStream }));
 server.use(compression())
 server.set("view engine", "ejs")
